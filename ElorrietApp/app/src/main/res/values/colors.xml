@@ -2,4 +2,8 @@
 <resources>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+    <color name="MoradoN">#A277FF</color>
+    <color name="Btn2">#F5F5F5</color>
+    <color name="BordeI">#D3D3D3</color>
+    <color name="Placeholder">#A0A0A0</color>
 </resources>

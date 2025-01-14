@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#2196F3"
+    android:backgroundTint="@color/black"
+    android:backgroundTintMode="add"
+    tools:context=".LoginFragment">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/white"
+        android:backgroundTint="@color/black"
+        android:backgroundTintMode="screen"
+        android:foregroundTint="#924343">
+
+        <TextView
+            android:id="@+id/textLogin"
+            style="@android:style/Widget.TextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="146dp"
+            android:layout_marginTop="232dp"
+            android:layout_marginEnd="146dp"
+            android:breakStrategy="high_quality"
+            android:text="@string/login"
+            android:textColor="@color/MoradoN"
+            android:textColorLink="#FFFFFF"
+            android:textSize="48sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/textErabiltzailea"
+            android:layout_width="322dp"
+            android:layout_height="55dp"
+            android:layout_marginStart="45dp"
+            android:layout_marginTop="88dp"
+            android:layout_marginEnd="45dp"
+            android:background="@drawable/textview_border"
+            android:clickable="true"
+            android:gravity="center|start|left"
+            android:hint="@string/textErabiltzailea"
+            android:inputType="text|textNoSuggestions"
+            android:paddingStart="20px"
+            android:shadowColor="#292929"
+            android:textSize="24sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="1.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textLogin" />
+
+        <TextView
+            android:id="@+id/LinkPasahitzaAhaztuta"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="223dp"
+            android:layout_marginEnd="45dp"
+            android:layout_marginBottom="236dp"
+            android:clickable="true"
+            android:gravity="center"
+            android:minHeight="48dp"
+            android:text="@string/pasahitza_Ahaztuta"
+            android:textColor="@color/MoradoN"
+            android:textColorLink="#E63535"
+            android:textSize="18sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="1.0"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <ImageView
+            android:id="@+id/logo"
+            android:layout_width="184dp"
+            android:layout_height="146dp"
+            android:layout_marginBottom="20dp"
+            android:src="@drawable/eit"
+            app:layout_constraintBottom_toTopOf="@+id/textLogin"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.497"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.727" />
+
+        <TextView
+            android:id="@+id/textPasahitza"
+            android:layout_width="322dp"
+            android:layout_height="55dp"
+            android:layout_marginStart="45dp"
+            android:layout_marginTop="64dp"
+            android:layout_marginEnd="45dp"
+            android:background="@drawable/textview_border"
+            android:clickable="true"
+            android:ems="10"
+            android:gravity="center|start|left"
+            android:hint="@string/textPasahitza"
+            android:inputType="text|textPassword|textAutoComplete|textAutoCorrect|textNoSuggestions"
+            android:paddingStart="20px"
+            android:textSize="24sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="1.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textErabiltzailea" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</FrameLayout>

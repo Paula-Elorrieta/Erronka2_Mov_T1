@@ -2,10 +2,13 @@
     <string name="app_name">ElorrietApp</string>
     <string name="hasi_saioa">Hasi saioa</string>
     <string name="erabiltzailea">Erabiltzailea</string>
-    <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="pasahitza_Ahaztuta">Pasahitza ahaztuta</string>
     <string name="textErabiltzailea">Erabiltzailea</string>
     <string name="login">Login</string>
     <string name="textPasahitza">Pasahitza</string>
+    <string name="argazkia_aldatu">Argazkia aldatu</string>
+    <string name="atzera">Atzera</string>
+    <string name="taldean_zaude">taldean zaude</string>
+    <string name="kaixo">Kaixo</string>
 </resources>

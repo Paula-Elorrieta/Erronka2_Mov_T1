@@ -10,6 +10,7 @@ import com.example.elorrietapp.modelo.Users;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.EOFException;
+import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
@@ -18,46 +19,45 @@ public class Service {
     private static final String ip = "10.5.104.41";
     private static final int port = 5000;
 
-    public static Object login(String user, String password) {
-        try {
-            // Establecer la conexión con el servidor
-            Log.i("Service", "Pre");
-            Socket socket = new Socket(ip, port);
-            ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream());
-            Log.i("Service", "out");
-            ObjectInputStream in = new ObjectInputStream(socket.getInputStream());
-            Log.i("Service", "in");
+    public static Users login(String user, String password) {
+        try (Socket socket = new Socket(ip, port);  // Crear la conexión al servidor
+             ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream()); // Para enviar datos al servidor
+             CustomObjectInputStream in = new CustomObjectInputStream(socket.getInputStream())) { // Para recibir datos del servidor
 
+            Log.i("Service", "Conexión establecida");
+
+            // Enviar la solicitud de login al servidor
             out.writeObject("LOGIN");
-            out.writeObject(user);
-            out.writeObject(password);
-            out.flush();
+            out.writeObject(user);  // Enviar el nombre de usuario
+            out.writeObject(password);  // Enviar la contraseña
+            out.flush();  // Asegúrate de que los datos se envíen
 
-            Object respuesta = in.readObject();
-            Users respuesta2 =  (Users) in.readObject();
-            Log.i("Service", "respuesta");
-            Log.e("Service", respuesta.toString());
-            Log.e("Service", respuesta2.toString());
-            return respuesta;
-            /*
-            //String respuesta = "";
-            if (respuesta instanceof String) {
-                String respuestaStr = (String) respuesta;
-                if (respuestaStr.startsWith("OK")) {
-                    Users loggedUser = (Users) in.readObject();
-                    if (loggedUser.getTipos().getId() == 3) {
-                        return "Éxito";
+            // Leer la respuesta del servidor
+            Object response = in.readObject();
+            if (response instanceof String) {
+                String responseMessage = (String) response;
+                if (responseMessage.equals("OK")) {
+                    // Si la respuesta es OK, el servidor enviará el objeto de usuario
+                    Object userResponse = in.readObject();
+                    if (userResponse instanceof Users) {
+                        Users userLog = (Users) userResponse;
+                        Log.i("Client", "Usuario recibido: " + userLog.getUsername());
+                        return userLog;  // Retornar el usuario recibido del servidor
                     } else {
-                        return "Solo los usuarios con tipo 3 pueden iniciar sesión.";
+                        Log.e("Client", "Error: Respuesta inesperada del servidor - No se recibió un usuario");
                     }
                 } else {
-                    return respuestaStr;
+                    Log.e("Client", "Error en la respuesta del servidor: " + responseMessage);
                 }
-            }*/
-        } catch (Exception e) {
-            e.printStackTrace();
+            } else {
+                Log.e("Client", "Error: La respuesta del servidor no es de tipo String");
+            }
+
+        } catch (IOException e) {
+            Log.e("Service", "Error de conexión o de E/S", e);
+        } catch (ClassNotFoundException e) {
+            Log.e("Service", "Error de deserialización", e);
         }
-        Log.i("Service", "CATCH");
         return null;
     }
 }

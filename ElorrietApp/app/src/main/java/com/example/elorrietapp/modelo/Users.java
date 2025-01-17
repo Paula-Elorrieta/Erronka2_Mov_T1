@@ -9,6 +9,7 @@ import java.util.Set;
  */
 public class Users implements Serializable {
 
+    private static final long serialVersionUID = 1L;
     private int id;
     private Tipos tipos;
     private String email;
@@ -21,10 +22,7 @@ public class Users implements Serializable {
     private Integer telefono1;
     private Integer telefono2;
     private byte[] argazkia;
-    private Set matriculacioneses = new HashSet(0);
-    private Set reunionesesForProfesorId = new HashSet(0);
-    private Set reunionesesForAlumnoId = new HashSet(0);
-    private Set horarioses = new HashSet(0);
+
 
     public Users() {
     }
@@ -35,8 +33,7 @@ public class Users implements Serializable {
     }
 
     public Users(int id, Tipos tipos, String email, String username, String password, String nombre, String apellidos,
-                 String dni, String direccion, Integer telefono1, Integer telefono2, byte[] argazkia, Set matriculacioneses,
-                 Set reunionesesForProfesorId, Set reunionesesForAlumnoId, Set horarioses) {
+                 String dni, String direccion, Integer telefono1, Integer telefono2, byte[] argazkia) {
         this.id = id;
         this.tipos = tipos;
         this.email = email;
@@ -49,10 +46,7 @@ public class Users implements Serializable {
         this.telefono1 = telefono1;
         this.telefono2 = telefono2;
         this.argazkia = argazkia;
-        this.matriculacioneses = matriculacioneses;
-        this.reunionesesForProfesorId = reunionesesForProfesorId;
-        this.reunionesesForAlumnoId = reunionesesForAlumnoId;
-        this.horarioses = horarioses;
+
     }
 
     public int getId() {
@@ -151,36 +145,5 @@ public class Users implements Serializable {
         this.argazkia = argazkia;
     }
 
-    public Set getMatriculacioneses() {
-        return this.matriculacioneses;
-    }
-
-    public void setMatriculacioneses(Set matriculacioneses) {
-        this.matriculacioneses = matriculacioneses;
-    }
-
-    public Set getReunionesesForProfesorId() {
-        return this.reunionesesForProfesorId;
-    }
-
-    public void setReunionesesForProfesorId(Set reunionesesForProfesorId) {
-        this.reunionesesForProfesorId = reunionesesForProfesorId;
-    }
-
-    public Set getReunionesesForAlumnoId() {
-        return this.reunionesesForAlumnoId;
-    }
-
-    public void setReunionesesForAlumnoId(Set reunionesesForAlumnoId) {
-        this.reunionesesForAlumnoId = reunionesesForAlumnoId;
-    }
-
-    public Set getHorarioses() {
-        return this.horarioses;
-    }
-
-    public void setHorarioses(Set horarioses) {
-        this.horarioses = horarioses;
-    }
-
 }
+

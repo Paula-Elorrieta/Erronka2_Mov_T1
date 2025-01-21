@@ -11,7 +11,7 @@ public class Users implements Serializable {
 
     private static final long serialVersionUID = 1L;
     private int id;
-    private Tipos tipos;
+    private int tipos;
     private String email;
     private String username;
     private String password;
@@ -27,12 +27,12 @@ public class Users implements Serializable {
     public Users() {
     }
 
-    public Users(int id, Tipos tipos) {
+    public Users(int id, int tipos) {
         this.id = id;
         this.tipos = tipos;
     }
 
-    public Users(int id, Tipos tipos, String email, String username, String password, String nombre, String apellidos,
+    public Users(int id, int tipos, String email, String username, String password, String nombre, String apellidos,
                  String dni, String direccion, Integer telefono1, Integer telefono2, byte[] argazkia) {
         this.id = id;
         this.tipos = tipos;
@@ -57,11 +57,11 @@ public class Users implements Serializable {
         this.id = id;
     }
 
-    public Tipos getTipos() {
+    public int getTipos() {
         return this.tipos;
     }
 
-    public void setTipos(Tipos tipos) {
+    public void setTipos(int tipos) {
         this.tipos = tipos;
     }
 

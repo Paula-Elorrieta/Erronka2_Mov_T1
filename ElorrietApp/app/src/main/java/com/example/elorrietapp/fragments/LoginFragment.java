@@ -31,6 +31,7 @@ public class LoginFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_login, container, false);
+        requireActivity().setTitle("Login");
 
         textErabiltzailea = view.findViewById(R.id.textErabiltzailea);
         textPasahitza = view.findViewById(R.id.textPasahitza);
@@ -97,7 +98,6 @@ public class LoginFragment extends Fragment {
                     Toast.makeText(getContext(), "Bakarrik Ikasleak eta Irakasleak sar daitezke", Toast.LENGTH_SHORT).show();
 
                 } else {
-                    // Bidali informazioa MenuFragment-era
                     Bundle serializedUser = new Bundle();
                     serializedUser.putSerializable("loggedUser", loggedUser);
 

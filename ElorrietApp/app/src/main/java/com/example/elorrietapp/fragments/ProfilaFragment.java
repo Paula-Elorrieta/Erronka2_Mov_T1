@@ -28,9 +28,6 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
-// Fragment barruan bilatu ditut zenbait funtzioak deprekatuak ez diren, kodea optimizatzeko eta
-// funtzionamendua hobetzeko.
-
 public class ProfilaFragment extends Fragment {
     private ImageView imgAurreikuspena;
     private Uri argazkiUri;
@@ -66,6 +63,7 @@ public class ProfilaFragment extends Fragment {
                              Bundle savedInstanceState) {
 
         View view = inflater.inflate(R.layout.fragment_profila, container, false);
+        requireActivity().setTitle("Profila");
 
         // Egiaztatu baimenak eskuratu direla
         if (ContextCompat.checkSelfPermission(getContext(), Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED ||

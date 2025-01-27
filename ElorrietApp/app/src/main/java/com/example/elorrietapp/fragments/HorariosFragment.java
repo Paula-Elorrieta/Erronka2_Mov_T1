@@ -1,4 +1,6 @@
 package com.example.elorrietapp.fragments;
+import com.example.elorrietapp.db.Service;
+import com.example.elorrietapp.modelo.Horarios;
 
 import android.annotation.SuppressLint;
 import android.os.AsyncTask;
@@ -6,13 +8,17 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
 import android.widget.Toast;
+
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
 import com.example.elorrietapp.R;
 import com.example.elorrietapp.db.Service;
 import com.example.elorrietapp.modelo.Horarios;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -33,15 +39,13 @@ public class HorariosFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_ordutegia, container, false);
 
         horarios = new ArrayList<>();
-        recyclerView = view.findViewById(R.id.recycler_view_horarios); // ID correcto para el RecyclerView
+        recyclerView = view.findViewById(R.id.recycler_view_horarios);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
         horariosAdapter = new HorariosAdapter(horarios);
         recyclerView.setAdapter(horariosAdapter);
 
-
-        // Llamamos a obtenerHorariosAsync para obtener los horarios en un hilo separado
-        obtenerHorariosAsync(4); // Aquí puedes pasar el ID que necesites
+        obtenerHorariosAsync(4);
 
         return view;
     }

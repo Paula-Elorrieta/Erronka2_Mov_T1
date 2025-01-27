@@ -11,6 +11,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.elorrietapp.fragments.LoginFragment;
 import com.example.elorrietapp.fragments.ProfilaFragment;
+import com.example.elorrietapp.gen.Gen;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -31,9 +32,13 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu, menu);
-        return true;
+        if (Gen.getLoggedUser() != null) {
+            getMenuInflater().inflate(R.menu.menu, menu);
+            return true;
+        }
+        return false;
     }
+
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem menuItem) {

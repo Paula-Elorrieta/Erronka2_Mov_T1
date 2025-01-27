@@ -17,6 +17,7 @@ import androidx.fragment.app.Fragment;
 import com.bumptech.glide.Glide;
 import com.example.elorrietapp.R;
 import com.example.elorrietapp.db.Service;
+import com.example.elorrietapp.gen.Gen;
 import com.example.elorrietapp.modelo.Users;
 
 public class LoginFragment extends Fragment {
@@ -35,6 +36,8 @@ public class LoginFragment extends Fragment {
         textPasahitza = view.findViewById(R.id.textPasahitza);
         ImageView logo = view.findViewById(R.id.logo);
         aldatuPasahitza = view.findViewById(R.id.LinkPasahitzaAhaztuta);
+
+        aldatuPasahitza.setEnabled(false);
 
         // Animazioa kargatu
         Glide.with(this)
@@ -94,10 +97,13 @@ public class LoginFragment extends Fragment {
                     Toast.makeText(getContext(), "Bakarrik Ikasleak eta Irakasleak sar daitezke", Toast.LENGTH_SHORT).show();
 
                 } else {
-
                     // Bidali informazioa MenuFragment-era
                     Bundle serializedUser = new Bundle();
                     serializedUser.putSerializable("loggedUser", loggedUser);
+
+                    Gen gen = new Gen();
+                    gen.setLoggedUser(loggedUser);
+                    Log.i("LoginTask", "Usuario guardado: " + gen.getLoggedUser().getUsername() + " ID: " + gen.getLoggedUser().getId());
 
                     MenuFragment menuFragment = new MenuFragment();
                     menuFragment.setArguments(serializedUser);

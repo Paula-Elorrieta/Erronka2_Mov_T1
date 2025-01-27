@@ -17,7 +17,7 @@ import java.io.ObjectOutputStream;
 import java.net.Socket;
 
 public class Service {
-    private static final String ip = "10.5.104.20";
+    private static final String ip = "10.5.104.41";
     //private static final String ip = "10.5.104.41";
     private static final int port = 5000;
 
@@ -28,24 +28,24 @@ public class Service {
 
             Log.i("Service", "Conexión establecida");
 
-            // Enviar la solicitud de login al servidor
             out.writeObject("LOGIN");
-            out.writeObject(user);  // Enviar el nombre de usuario
-            out.writeObject(password);  // Enviar la contraseña
-            out.flush();  // Asegúrate de que los datos se envíen
+            out.writeObject(user);
+            out.writeObject(password);
+            out.flush();
 
-            // Leer la respuesta del servidor
             Object response = in.readObject();
             if (response instanceof String) {
                 String responseMessage = (String) response;
                 if (responseMessage.equals("OK")) {
-                    // Si la respuesta es OK, el servidor enviará el objeto de usuario
                     Object userResponse = in.readObject();
                     if (userResponse instanceof Users) {
                         Users userLog = (Users) userResponse;
                         Log.i("Client", "Usuario recibido: " + userLog.getUsername());
+                        Log.i("Client", "Tipo de usuario recibido: " + userLog.getTipos());
                         Object tipo = in.readObject();
+                        Log.i("Client", "Tipo de usuario como obj: " + tipo);
                         if (tipo instanceof Integer) {
+                            Log.i("Client", "Tipo de usuario: " + tipo);
                             userLog.setTipos((int) tipo);
                             Log.i("Client", "Tipo de usuario: " + userLog.getTipos());
                             return userLog;

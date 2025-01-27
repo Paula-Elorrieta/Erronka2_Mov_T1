@@ -29,8 +29,7 @@ public class MenuFragment extends Fragment {
         btnOrdutegiIkasle = view.findViewById(R.id.btnIkasleen_ordutegiak);
         btnIkasleDatuak = view.findViewById(R.id.btnIkasleen_datuak);
 
-
-
+        //btnIkasleDatuak.setVisibility();
         return view;
     }
 
@@ -40,11 +39,26 @@ public class MenuFragment extends Fragment {
         // recibir la informacion enviada con un bundle
         Bundle bundle = this.getArguments();
         if (bundle != null) {
-            // recibir la informacion enviada con un bundle
             Users user = (Users) bundle.getSerializable("loggedUser");
-            Toast.makeText(getContext(), "Ongi etorri " + user.getNombre(), Toast.LENGTH_SHORT).show();
+            Toast.makeText(getContext(), "Ongi etorri " + user.getNombre() + " Zure tipo: " + user.getTipos() , Toast.LENGTH_SHORT).show();
+            if (user.getTipos() == 4) {
+                /*
+                btnBilerak.setVisibility(View.INVISIBLE);
+                btnOrdutegiPropioa.setVisibility(View.VISIBLE);
+                btnOrdutegiIkasle.setVisibility(View.VISIBLE);
+                btnIkasleDatuak.setVisibility(View.VISIBLE);*/
+
+            } else if (user.getTipos() == 3) {
+                /*
+                btnBilerak.setVisibility(View.VISIBLE);
+                btnOrdutegiPropioa.setVisibility(View.VISIBLE);
+                btnOrdutegiIkasle.setVisibility(View.VISIBLE);
+                btnIkasleDatuak.setVisibility(View.VISIBLE);*/
+            } else {
+
+            }
+
         } else {
-            // si no se recibe nada, se redirige al login
             Toast.makeText(getContext(), "Ez da ondo berreskuratu erabiltzailea", Toast.LENGTH_SHORT).show();
             //getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new LoginFragment()).commit();
         }

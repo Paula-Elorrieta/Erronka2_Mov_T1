@@ -11,6 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultLauncher;
@@ -20,8 +21,12 @@ import androidx.core.content.ContextCompat;
 import androidx.core.content.FileProvider;
 
 import com.example.elorrietapp.R;
+import com.example.elorrietapp.gen.Gen;
+import com.example.elorrietapp.modelo.Users;
 
 import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 
 // Fragment barruan bilatu ditut zenbait funtzioak deprekatuak ez diren, kodea optimizatzeko eta
 // funtzionamendua hobetzeko.
@@ -29,6 +34,9 @@ import java.io.File;
 public class ProfilaFragment extends Fragment {
     private ImageView imgAurreikuspena;
     private Uri argazkiUri;
+    private Button btnArgazkiaAtera;
+    private TextView textIzena;
+    private TextView textTaldea;
 
     // Argazkia ateratzeko ActivityResultLauncher
     private final ActivityResultLauncher<Intent> kameraLauncher = registerForActivityResult(
@@ -66,10 +74,28 @@ public class ProfilaFragment extends Fragment {
             permissionLauncher.launch(Manifest.permission.CAMERA);
             permissionLauncher.launch(Manifest.permission.WRITE_EXTERNAL_STORAGE);
         }
-
-        Button btnArgazkiaAtera = view.findViewById(R.id.btnArgazkiaAtera);
+        textIzena = view.findViewById(R.id.textIzena);
+        textTaldea = view.findViewById(R.id.textTaldea);
+        btnArgazkiaAtera = view.findViewById(R.id.btnArgazkiaAtera);
         imgAurreikuspena = view.findViewById(R.id.imgAurreikuspena);
         Button btnAtzera = view.findViewById(R.id.btnAtzera);
+
+        // Textuak jarri
+        Gen gen = new Gen();
+        Users user = gen.getLoggedUser();
+
+        textIzena.setText("Kaixo " + user.getNombre());
+
+        String taldea = "";
+        if (user.getTipos() == 3) {
+            taldea = "Ikaslea";
+        } else {
+            taldea = "Irakaslea";
+        }
+        textTaldea.setText(taldea + " zara");
+
+        //Img jarri
+        //imgAurreikuspena.setImageURI(byteToUri(user.getArgazkia()));
 
         btnAtzera.setOnClickListener(v -> {
             requireActivity().getSupportFragmentManager().popBackStack();
@@ -92,5 +118,18 @@ public class ProfilaFragment extends Fragment {
         intent.putExtra(MediaStore.EXTRA_OUTPUT, argazkiUri);
 
         kameraLauncher.launch(intent);
+    }
+
+    private Uri byteToUri(byte[] argazkia) {
+        File file = new File(getContext().getCacheDir(), "argazkia.jpg");
+        try {
+            FileOutputStream fos = new FileOutputStream(file);
+            fos.write(argazkia);
+            fos.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        // Va a dar unos problemas de la ostia
+        return FileProvider.getUriForFile(getContext(), "com.example.elorrietapp.fileprovider", file);
     }
 }

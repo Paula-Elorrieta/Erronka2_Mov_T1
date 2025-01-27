@@ -1,20 +1,14 @@
 package com.example.elorrietapp.db;
 
-import static java.security.AccessController.getContext;
-
 import android.util.Log;
-import android.widget.Toast;
 
-import com.example.elorrietapp.modelo.Tipos;
+import com.example.elorrietapp.modelo.Horarios;
 import com.example.elorrietapp.modelo.Users;
 
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
-import java.io.EOFException;
 import java.io.IOException;
-import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
+import java.util.List;
 
 public class Service {
     private static final String ip = "10.5.104.41";
@@ -104,4 +98,48 @@ public class Service {
         }
         return false;
     }
+
+    public List<Horarios> getHorariosProfeByid(int id) {
+        try (Socket socket = new Socket(ip, port);
+             ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream());
+             CustomObjectInputStream in = new CustomObjectInputStream(socket.getInputStream())) {
+
+            Log.i("Service", "Conexión establecida");
+
+            // Enviar la solicitud al servidor
+            out.writeObject("ORDUTEGIA");
+            out.writeObject(id);
+            out.flush();
+
+            // Leer la respuesta del servidor
+            Object response = in.readObject();
+            if (response instanceof String) {
+                String responseMessage = (String) response;
+                if (responseMessage.equals("OK")) {
+                    // La respuesta fue OK, ahora intentamos leer la lista de horarios
+                    Object hora = in.readObject();
+                    if (hora instanceof List<?>) {
+                        List<Horarios> horarios = (List<Horarios>) hora;
+                        Log.i("Client", "Horarios recibidos: " + horarios);
+                        return horarios; // Devolver la lista de horarios
+                    } else {
+                        Log.e("Client", "Error: Respuesta inesperada del servidor - No se recibió una lista de horarios válida");
+                    }
+                } else {
+                    Log.e("Client", "Error en la respuesta del servidor: " + responseMessage);
+                }
+            } else {
+                Log.e("Client", "Error: La respuesta del servidor no es un String como se esperaba");
+            }
+
+        } catch (IOException e) {
+            Log.e("Service", "Error de conexión o de E/S", e);
+        } catch (ClassNotFoundException e) {
+            Log.e("Service", "Error de deserialización", e);
+        } catch (Exception e) {
+            Log.e("Service", "Error inesperado", e);
+        }
+        return null;
+    }
+
 }

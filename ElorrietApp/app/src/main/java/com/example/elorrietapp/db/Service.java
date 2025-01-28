@@ -14,7 +14,7 @@ import java.net.Socket;
 import java.util.List;
 
 public class Service {
-    private static final String ip = "192.168.0.22";
+    private static final String ip = "10.5.104.41";
     //private static final String ip = "10.5.104.41";
     private static final int port = 5000;
 
@@ -149,10 +149,10 @@ public class Service {
                             horario.setId(horariosIda.get(i));
 
                             // Imprimir detalles de los horarios
-                            Log.i("Horarios", "ID: " + horario.getId() +
+                            Log.i("Horarios", "ID: " + horario.getId().getClass() +
                                     ", Usuario: " + (horario.getUsers() != null ? horario.getUsers().getNombre() : "N/A") +
-                                    ", Módulo: " + (horario.getModulos() != null ? horario.getModulos().getNombre() : "N/A") +
-                                    ", HorariosId: " + (horario.getId() != null ? horario.getId().getHora() : "N/A"));
+                                    ", Módulo: " + (horario.getModulos().getNombre() != null ? horario.getModulos().getNombre() : "N/A") +
+                                    ", HorariosId: " + (horario.getId().getDia() != null ? horario.getId().getHora() : "N/A"));
                         }
 
                         return horarios;

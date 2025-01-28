@@ -15,11 +15,36 @@
         android:textStyle="bold"
         android:layout_marginBottom="16dp" />
 
-    <!-- RecyclerView para mostrar los horarios -->
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recycler_view_horarios"
-    android:layout_width="match_parent"
-    android:layout_height="0dp"
-    android:layout_weight="1" />
+    <TableLayout
+        android:id="@+id/tableLayoutHorarios"
+        android:layout_width="wrap_content"
+        android:layout_height="127dp"
+        android:orientation="vertical"
+        android:padding="16dp"
+        android:stretchColumns="1">
+
+        <!-- Encabezados de columna, primero Hora y luego Día -->
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="sans-serif-medium"
+                android:padding="8dp"
+                android:text="Hora" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="sans-serif-medium"
+                android:padding="8dp"
+                android:text="Día" />
+
+        </TableRow>
+
+    </TableLayout>
+
 
 </LinearLayout>

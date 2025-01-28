@@ -34,8 +34,12 @@ public class ProfilaFragment extends Fragment {
     private ImageView imgAurreikuspena;
     private Uri argazkiUri;
     private Button btnArgazkiaAtera;
-    private TextView textIzena;
-    private TextView textTaldea;
+    private TextView TextVusername;
+    private TextView textVnombreApellidos;
+    private TextView textVdni;
+    private TextView textVtelefono1;
+    private TextView textVCurso;
+
 
     // Baimenak eskatzeko ActivityResultLauncher (kamera eta memoria)
     private final ActivityResultLauncher<String> permissionLauncher = registerForActivityResult(
@@ -62,23 +66,36 @@ public class ProfilaFragment extends Fragment {
             permissionLauncher.launch(Manifest.permission.WRITE_EXTERNAL_STORAGE);
         }
 
-        textIzena = view.findViewById(R.id.textIzena);
-        textTaldea = view.findViewById(R.id.textTaldea);
+
         btnArgazkiaAtera = view.findViewById(R.id.btnArgazkiaAtera);
         imgAurreikuspena = view.findViewById(R.id.imgAurreikuspena);
         Button btnAtzera = view.findViewById(R.id.btnAtzera);
 
-        // Obtén datos del usuario
+        TextVusername = view.findViewById(R.id.TextVusername);
+        textVnombreApellidos = view.findViewById(R.id.textVnombreApellidos);
+        textVdni = view.findViewById(R.id.textVdni);
+        textVtelefono1 = view.findViewById(R.id.textVtelefono1);
+        textVCurso = view.findViewById(R.id.textVCurso);
+
+
         Gen gen = new Gen();
         Users user = gen.getLoggedUser();
 
-        // Configura textos
-        textIzena.setText("Kaixo " + user.getNombre());
+        TextVusername.setText(user.getUsername());
+        textVnombreApellidos.setText(user.getNombre() + " " + user.getApellidos());
+        textVdni.setText(user.getDni());
+        if (user.getTelefono1() != null) {
+            textVtelefono1.setText(user.getTelefono1());
+        } else {
+            textVtelefono1.setText("Teléfono no disponible");
+        }
 
-        String taldea = (user.getTipos() == 3) ? "Ikaslea" : "Irakaslea";
-        textTaldea.setText(taldea + " zara");
+        if (user.getTipos() == 3) {
+            textVCurso.setVisibility(View.INVISIBLE);
+        } else {
+//            textVCurso.setText(user.getCurso());
+        }
 
-        // Carga imagen del usuario o una predeterminada
         if (user.getArgazkia() != null && user.getArgazkia().length > 0) {
             imgAurreikuspena.setImageURI(byteToUri(user.getArgazkia()));
         } else {

@@ -8,44 +8,55 @@
 
 
     <LinearLayout
-        android:layout_width="306dp"
-        android:layout_height="543dp"
+        android:layout_width="355dp"
+        android:layout_height="600dp"
         android:gravity="center"
         android:orientation="vertical"
         android:padding="16dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.278">
 
         <Button
             android:id="@+id/btnIkasleen_datuak"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_width="324dp"
+            android:layout_height="63dp"
+            android:backgroundTint="@color/MoradoN"
             android:text="@string/ikasleen_datuak" />
+
         <Space
             android:layout_width="match_parent"
             android:layout_height="46dp" />
+
         <Button
             android:id="@+id/btnBilerak"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="63dp"
+            android:backgroundTint="@color/MoradoN"
             android:text="@string/bilerak" />
+
         <Space
             android:layout_width="match_parent"
             android:layout_height="46dp" />
+
         <Button
             android:id="@+id/btnNire_ordutegia"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="63dp"
+            android:backgroundTint="@color/MoradoN"
             android:text="@string/nire_ordutegiak" />
+
         <Space
             android:layout_width="match_parent"
             android:layout_height="46dp" />
+
         <Button
             android:id="@+id/btnIkasleen_ordutegiak"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="63dp"
+            android:backgroundTint="@color/MoradoN"
             android:text="@string/ikaselen_ordutegiak" />
     </LinearLayout>
 

@@ -18,29 +18,11 @@
         android:foregroundTint="#924343">
 
         <TextView
-            android:id="@+id/textLogin"
-            style="@android:style/Widget.TextView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="146dp"
-            android:layout_marginTop="232dp"
-            android:layout_marginEnd="146dp"
-            android:breakStrategy="high_quality"
-            android:text="@string/login"
-            android:textColor="@color/MoradoN"
-            android:textColorLink="#FFFFFF"
-            android:textSize="48sp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <TextView
             android:id="@+id/textErabiltzailea"
             android:layout_width="322dp"
             android:layout_height="55dp"
             android:layout_marginStart="45dp"
-            android:layout_marginTop="88dp"
+            android:layout_marginTop="264dp"
             android:layout_marginEnd="45dp"
             android:background="@drawable/textview_border"
             android:clickable="true"
@@ -53,15 +35,13 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="1.0"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textLogin" />
+            app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
             android:id="@+id/LinkPasahitzaAhaztuta"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="223dp"
-            android:layout_marginEnd="45dp"
-            android:layout_marginBottom="236dp"
+            android:layout_marginTop="28dp"
             android:clickable="true"
             android:gravity="center"
             android:minHeight="48dp"
@@ -69,36 +49,38 @@
             android:textColor="@color/MoradoN"
             android:textColorLink="#E63535"
             android:textSize="18sp"
-            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintBottom_toTopOf="@+id/btnLogin"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="1.0"
-            app:layout_constraintStart_toStartOf="parent" />
+            app:layout_constraintHorizontal_bias="0.17"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textPasahitza"
+            app:layout_constraintVertical_bias="0.0" />
 
         <ImageView
             android:id="@+id/logo"
-            android:layout_width="184dp"
-            android:layout_height="146dp"
-            android:layout_marginBottom="20dp"
+            android:layout_width="187dp"
+            android:layout_height="136dp"
+            android:layout_marginBottom="52dp"
             android:src="@drawable/eit"
-            app:layout_constraintBottom_toTopOf="@+id/textLogin"
+            app:layout_constraintBottom_toTopOf="@+id/textErabiltzailea"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="1.0"
+            app:layout_constraintHorizontal_bias="0.928"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.787" />
+            app:layout_constraintVertical_bias="0.96" />
 
         <ImageView
             android:id="@+id/logoElorrieta"
-            android:layout_width="184dp"
-            android:layout_height="146dp"
-            android:layout_marginBottom="20dp"
+            android:layout_width="111dp"
+            android:layout_height="91dp"
+            android:layout_marginTop="140dp"
             android:src="@drawable/elogo"
-            app:layout_constraintBottom_toTopOf="@+id/textLogin"
+            app:layout_constraintBottom_toTopOf="@+id/textErabiltzailea"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.07"
+            app:layout_constraintHorizontal_bias="0.053"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.787" />
+            app:layout_constraintVertical_bias="0.0" />
 
         <TextView
             android:id="@+id/textPasahitza"
@@ -112,14 +94,29 @@
             android:ems="10"
             android:gravity="center|start|left"
             android:hint="@string/textPasahitza"
-            android:inputType="text|textPassword|textAutoComplete|textAutoCorrect|textNoSuggestions"
             android:imeOptions="actionDone"
+            android:inputType="text|textPassword|textAutoComplete|textAutoCorrect|textNoSuggestions"
             android:paddingStart="20px"
             android:textSize="24sp"
+            app:layout_constraintBottom_toTopOf="@+id/btnLogin"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="1.0"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textErabiltzailea" />
+            app:layout_constraintTop_toBottomOf="@+id/textErabiltzailea"
+            app:layout_constraintVertical_bias="0.0" />
+
+        <Button
+            android:id="@+id/btnLogin"
+            android:layout_width="333dp"
+            android:layout_height="60dp"
+            android:layout_marginTop="24dp"
+            android:backgroundTint="@color/MoradoN"
+            android:text="@string/hasi_saioa"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textErabiltzailea"
+            app:layout_constraintVertical_bias="0.44" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </FrameLayout>

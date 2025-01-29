@@ -32,11 +32,8 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        if (Gen.getLoggedUser() != null) {
-            getMenuInflater().inflate(R.menu.menu, menu);
-            return true;
-        }
-        return false;
+        getMenuInflater().inflate(R.menu.menu, menu);
+        return Gen.getLoggedUser() != null;
     }
 
 

@@ -12,6 +12,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
 import com.bumptech.glide.Glide;
@@ -32,6 +33,7 @@ public class LoginFragment extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_login, container, false);
         requireActivity().setTitle("Login");
+        setHasOptionsMenu(true);
 
         textErabiltzailea = view.findViewById(R.id.textErabiltzailea);
         textPasahitza = view.findViewById(R.id.textPasahitza);
@@ -138,5 +140,11 @@ public class LoginFragment extends Fragment {
                 Toast.makeText(getContext(), "Erabiltzailea ez da existitzen", Toast.LENGTH_SHORT).show();
             }
         }
+    }
+
+    @Override
+    public void onPrepareOptionsMenu(@NonNull Menu menu) {
+        super.onPrepareOptionsMenu(menu);
+        menu.clear();
     }
 }

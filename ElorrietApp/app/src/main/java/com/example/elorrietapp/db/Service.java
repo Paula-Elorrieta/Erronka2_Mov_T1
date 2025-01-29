@@ -2,8 +2,11 @@ package com.example.elorrietapp.db;
 
 import android.util.Log;
 
+import com.example.elorrietapp.modelo.Ciclos;
 import com.example.elorrietapp.modelo.Horarios;
 import com.example.elorrietapp.modelo.HorariosId;
+import com.example.elorrietapp.modelo.Matriculaciones;
+import com.example.elorrietapp.modelo.MatriculacionesId;
 import com.example.elorrietapp.modelo.Modulos;
 import com.example.elorrietapp.modelo.Reuniones;
 import com.example.elorrietapp.modelo.Users;
@@ -69,9 +72,9 @@ public class Service {
 
     public static boolean resetPassword(String user) {
         Log.e("Service", "Cambiando contraseña para el usuario: " + user);
-        try (Socket socket = new Socket(ip, port);  // Crear la conexión al servidor
-             ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream()); // Para enviar datos al servidor
-             CustomObjectInputStream in = new CustomObjectInputStream(socket.getInputStream())) { // Para recibir datos del servidor
+        try (Socket socket = new Socket(ip, port);
+             ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream());
+             CustomObjectInputStream in = new CustomObjectInputStream(socket.getInputStream())) {
 
             Log.i("Service", "Conexión establecida");
 
@@ -134,21 +137,17 @@ public class Service {
                         List<Horarios> horarios = (List<Horarios>) rawList;
                         Log.i("Client", "Horarios recibidos: " + horarios.size());
 
-                        // Leer las listas adicionales de Modulos, Users, y HorariosId en el mismo orden que el servidor
                         List<Modulos> modulos = (List<Modulos>) in.readObject();
                         List<Users> users = (List<Users>) in.readObject();
                         List<HorariosId> horariosIda = (List<HorariosId>) in.readObject();
 
-                        // Ahora asignamos los datos recibidos a los objetos Horarios
                         for (int i = 0; i < horarios.size(); i++) {
                             Horarios horario = horarios.get(i);
 
-                            // Rellenamos el objeto Horarios con los datos correspondientes
                             horario.setModulos(modulos.get(i));
                             horario.setUsers(users.get(i));
                             horario.setId(horariosIda.get(i));
 
-                            // Imprimir detalles de los horarios
                             Log.i("Horarios", "ID: " + horario.getId().getClass() +
                                     ", Usuario: " + (horario.getUsers() != null ? horario.getUsers().getNombre() : "N/A") +
                                     ", Módulo: " + (horario.getModulos().getNombre() != null ? horario.getModulos().getNombre() : "N/A") +
@@ -166,6 +165,66 @@ public class Service {
                 Log.e("Client", "Error: Respuesta inesperada del servidor");
             }
 
+        } catch (IOException | ClassNotFoundException e) {
+            Log.e("Service", "Error de conexión o de deserialización", e);
+        }
+        return null;
+    }
+
+    public List<Matriculaciones> getMatriculacionesByUser(int id) {
+        try (Socket socket = new Socket(ip, port);
+             ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream());
+             CustomObjectInputStream in = new CustomObjectInputStream(socket.getInputStream())) {
+
+            Log.i("Service", "Conexión establecida");
+
+            out.writeObject("MATRIKULAK");
+            out.writeObject(id);
+            out.flush();
+
+            Object response = in.readObject();
+            Log.e("noif", response + "");
+
+            if (response instanceof String) {
+                String responseMessage = (String) response;
+                if (responseMessage.equals("OK")) {
+
+                    Object matriculaciones = in.readObject();
+                    if (matriculaciones instanceof List<?>) {
+                        List<?> rawList = (List<?>) matriculaciones;
+
+                        Log.e("Client", "Matriculaciones recibidas: " + rawList.size());
+
+                        for (Object obj : rawList) {
+                            if (!(obj instanceof Matriculaciones)) {
+                                Log.e("Client", "Error: Uno de los elementos no es del tipo Matriculaciones");
+                                return null;
+                            }
+
+                            List<Matriculaciones> matriculacionesList = (List<Matriculaciones>) rawList;
+
+                            List<Ciclos> ciclos = (List<Ciclos>) in.readObject();
+                            List<Users> users = (List<Users>) in.readObject();
+                            List<MatriculacionesId> matriculacionesId = (List<MatriculacionesId>) in.readObject();
+
+                            for (int i = 0; i < matriculacionesList.size(); i++) {
+                                Matriculaciones matriculacion = matriculacionesList.get(i);
+
+                                matriculacion.setCiclos(ciclos.get(i));
+                                matriculacion.setUsers(users.get(i));
+                                matriculacion.setId(matriculacionesId.get(i));
+
+                                Log.i("Matriculaciones", "ID: " + matriculacion.getId().getClass() +
+                                        ", Usuario: " + (matriculacion.getUsers() != null ? matriculacion.getUsers().getNombre() : "N/A") +
+                                        ", Ciclo: " + (matriculacion.getCiclos().getNombre() != null ? matriculacion.getCiclos().getNombre() : "N/A") +
+                                        ", MatriculacionesId: " + (matriculacion.getId() != null ? matriculacion.getId().getCurso() : "N/A"));
+                            }
+
+                            return matriculacionesList;
+                        }
+                    }
+                }
+            }
         } catch (IOException | ClassNotFoundException e) {
             Log.e("Service", "Error de conexión o de deserialización", e);
         }

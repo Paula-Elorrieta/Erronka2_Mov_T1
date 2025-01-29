@@ -14,10 +14,11 @@ import com.example.elorrietapp.modelo.Users;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
+import java.util.ArrayList;
 import java.util.List;
 
 public class Service {
-    private static final String ip = "10.5.104.41";
+    private static final String ip = "192.168.0.22";
     //private static final String ip = "10.5.104.41";
     private static final int port = 5000;
 
@@ -303,6 +304,80 @@ public class Service {
                         return reuniones;
                     } else {
                         Log.e("Client", "Error: No se recibió una lista de reuniones válida");
+                    }
+                } else {
+                    Log.e("Client", "Error en la respuesta del servidor: " + responseMessage);
+                }
+            } else {
+                Log.e("Client", "Error: La respuesta del servidor no es un String como se esperaba");
+            }
+        } catch (IOException e) {
+            Log.e("Service", "Error de conexión o de E/S", e);
+        } catch (ClassNotFoundException e) {
+            Log.e("Service", "Error de deserialización", e);
+        } catch (Exception e) {
+            Log.e("Service", "Error inesperado", e);
+        }
+        return null;
+    }
+
+    public ArrayList<Users> handleGetIkasleakByIrakasleak(int id) {
+        try (Socket socket = new Socket(ip, port);
+             ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream());
+             CustomObjectInputStream in = new CustomObjectInputStream(socket.getInputStream())) {
+
+            out.writeObject("IKASLEZERRENDA");
+            out.writeObject(id);
+            out.flush();
+
+            Object response = in.readObject();
+            if (response instanceof String) {
+                String responseMessage = (String) response;
+                if (responseMessage.equals("OK")) {
+                    Object usersObj = in.readObject();
+                    if (usersObj instanceof ArrayList<?>) {
+                        ArrayList<Users> users = (ArrayList<Users>) usersObj;
+                        Log.i("Client", "Usuarios recibidos: " + users);
+                        return users;
+                    } else {
+                        Log.e("Client", "Error: No se recibió una lista de usuarios válida");
+                    }
+                } else {
+                    Log.e("Client", "Error en la respuesta del servidor: " + responseMessage);
+                }
+            } else {
+                Log.e("Client", "Error: La respuesta del servidor no es un String como se esperaba");
+            }
+        } catch (IOException e) {
+            Log.e("Service", "Error de conexión o de E/S", e);
+        } catch (ClassNotFoundException e) {
+            Log.e("Service", "Error de deserialización", e);
+        } catch (Exception e) {
+            Log.e("Service", "Error inesperado", e);
+        }
+        return null;
+    }
+
+    public ArrayList<Users> handleGetIrakasleakByIkasleak(int ikasleId) {
+        try (Socket socket = new Socket(ip, port);
+             ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream());
+             CustomObjectInputStream in = new CustomObjectInputStream(socket.getInputStream())) {
+
+            out.writeObject("IRAKASLEZERRENDA");
+            out.writeObject(ikasleId);
+            out.flush();
+
+            Object response = in.readObject();
+            if (response instanceof String) {
+                String responseMessage = (String) response;
+                if (responseMessage.equals("OK")) {
+                    Object usersObj = in.readObject();
+                    if (usersObj instanceof ArrayList<?>) {
+                        ArrayList<Users> users = (ArrayList<Users>) usersObj;
+                        Log.i("Client", "Usuarios recibidos: " + users);
+                        return users;
+                    } else {
+                        Log.e("Client", "Error: No se recibió una lista de usuarios válida");
                     }
                 } else {
                     Log.e("Client", "Error en la respuesta del servidor: " + responseMessage);

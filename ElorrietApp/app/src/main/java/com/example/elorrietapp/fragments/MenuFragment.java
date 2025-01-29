@@ -6,9 +6,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.Toast;
+
 import androidx.fragment.app.Fragment;
+
 import com.example.elorrietapp.R;
-import com.example.elorrietapp.db.Service;
 import com.example.elorrietapp.modelo.Users;
 
 public class MenuFragment extends Fragment {
@@ -17,6 +18,7 @@ public class MenuFragment extends Fragment {
     Button btnOrdutegiPropioa;
     Button btnOrdutegiIkasle;
     Button btnIkasleDatuak;
+    Button btnIrakasleenDatuak;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -29,6 +31,7 @@ public class MenuFragment extends Fragment {
         btnOrdutegiPropioa = view.findViewById(R.id.btnNire_ordutegia);
         btnOrdutegiIkasle = view.findViewById(R.id.btnIkasleen_ordutegiak);
         btnIkasleDatuak = view.findViewById(R.id.btnIkasleen_datuak);
+        btnIrakasleenDatuak = view.findViewById(R.id.btnIrakasleen_datuak);
 
         btnOrdutegiPropioa.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -50,6 +53,26 @@ public class MenuFragment extends Fragment {
             }
         });
 
+        btnIkasleDatuak.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                getActivity().getSupportFragmentManager().beginTransaction()
+                        .replace(R.id.fragmentContainerView, new IkasleZerrendaFragment())
+                        .addToBackStack(null)
+                        .commit();
+            }
+        });
+
+        btnIrakasleenDatuak.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                getActivity().getSupportFragmentManager().beginTransaction()
+                        .replace(R.id.fragmentContainerView, new IrakasleZerrendaFragment())
+                        .addToBackStack(null)
+                        .commit();
+            }
+        });
+
         return view;
     }
 
@@ -62,10 +85,10 @@ public class MenuFragment extends Fragment {
             Users user = (Users) bundle.getSerializable("loggedUser");
             Toast.makeText(getContext(), "Ongi etorri " + user.getNombre() + " Zure tipo: " + user.getTipos(), Toast.LENGTH_SHORT).show();
 //            if (user.getTipos() == 4) {
-                btnBilerak.setVisibility(View.VISIBLE);
-                btnOrdutegiPropioa.setVisibility(View.VISIBLE);
-                btnOrdutegiIkasle.setVisibility(View.VISIBLE);
-                btnIkasleDatuak.setVisibility(View.VISIBLE);
+            btnBilerak.setVisibility(View.VISIBLE);
+            btnOrdutegiPropioa.setVisibility(View.VISIBLE);
+            btnOrdutegiIkasle.setVisibility(View.VISIBLE);
+            btnIkasleDatuak.setVisibility(View.VISIBLE);
 //            } else if (user.getTipos() == 3) {
 //                btnBilerak.setVisibility(View.VISIBLE);
 //                btnOrdutegiPropioa.setVisibility(View.VISIBLE);

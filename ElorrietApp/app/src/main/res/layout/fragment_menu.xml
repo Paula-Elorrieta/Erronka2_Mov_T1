@@ -58,6 +58,13 @@
             android:layout_height="63dp"
             android:backgroundTint="@color/MoradoN"
             android:text="@string/ikaselen_ordutegiak" />
+
+        <Button
+            android:id="@+id/btnIrakasleen_datuak"
+            android:layout_width="match_parent"
+            android:layout_height="63dp"
+            android:backgroundTint="@color/MoradoN"
+            android:text="@string/irakasleen_datuak" />
     </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

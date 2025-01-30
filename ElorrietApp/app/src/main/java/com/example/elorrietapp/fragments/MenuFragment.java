@@ -19,7 +19,7 @@ public class MenuFragment extends Fragment {
     Button btnOrdutegiPropioa;
     Button btnIrakasleOrdutegiak;
     Button btnZerrendak;
-
+    public Users userlog;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -34,7 +34,7 @@ public class MenuFragment extends Fragment {
         btnZerrendak = view.findViewById(R.id.btnZerrendak);
 
         Gen gen = new Gen();
-        Users userlog = gen.getLoggedUser();
+        userlog = gen.getLoggedUser();
 
         if (userlog.getTipos() == 3) {
             btnZerrendak.setText(R.string.ikasleen_datuak);
@@ -70,16 +70,26 @@ public class MenuFragment extends Fragment {
 //                }
 //            });
         }
-
+        if (userlog.getTipos() == 3) {
         btnOrdutegiPropioa.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                getActivity().getSupportFragmentManager().beginTransaction()
-                        .replace(R.id.fragmentContainerView, new HorariosFragment())
-                        .addToBackStack(null)
-                        .commit();
+                @Override
+                public void onClick(View v) {
+                    getActivity().getSupportFragmentManager().beginTransaction()
+                            .replace(R.id.fragmentContainerView, new HorariosFragment())
+                            .addToBackStack(null)
+                            .commit();
+                }
+            });}
+            else {
+            btnOrdutegiPropioa.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    getActivity().getSupportFragmentManager().beginTransaction()
+                            .replace(R.id.fragmentContainerView, new IkasleOrdutegiaFragment())
+                            .addToBackStack(null)
+                            .commit();
+                }});
             }
-        });
 
         btnBilerak.setOnClickListener(new View.OnClickListener() {
             @Override

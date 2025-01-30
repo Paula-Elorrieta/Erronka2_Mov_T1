@@ -6,6 +6,7 @@
     tools:context=".fragments.BilerakFragment" >
 
     <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/BilerakZerrendak"
         android:layout_width="411dp"
         android:layout_height="781dp"
         tools:layout_editor_absoluteX="1dp"

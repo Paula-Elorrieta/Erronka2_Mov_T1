@@ -12,6 +12,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 
 import com.example.elorrietapp.R;
 import com.example.elorrietapp.db.Service;
@@ -37,6 +38,7 @@ public class BilerakFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_bilerak, container, false);
         requireActivity().setTitle(R.string.bilerak);
         BilerakZerrendak = view.findViewById(R.id.BilerakZerrendak);
+        Button buttonSortuBilerak = view.findViewById(R.id.buttonSortuBilerak);
         BilerakZerrendak.setLayoutManager(new LinearLayoutManager(getContext()));
 
         adapter = new BilerakAdapter(bilerak);
@@ -59,34 +61,15 @@ public class BilerakFragment extends Fragment {
                     bilerak = service.handleGetBilera(userLog.getId());
                 }
                 getActivity().runOnUiThread(() -> {
-                    bilerak.addAll(bilerak);
+                    adapter.setReuniones(bilerak);
+                    adapter.notifyDataSetChanged();
                 });
+
+
 
             } catch (Exception e) {
                 Log.e("Bilerak", "Error cargando reuniones", e);
             }
         });
     }
-
-    private void IrakasleBilerak(int userId) {
-        ExecutorService executor = Executors.newSingleThreadExecutor();
-        Handler handler = new Handler(Looper.getMainLooper());
-
-        executor.execute(() -> {
-            Service service = new Service();
-            List<Reuniones> reuniones = service.getBilerakIkasleak(userId);
-
-            handler.post(() -> {
-                if (reuniones != null) {
-                    for (Reuniones r : reuniones) {
-                        Log.i("BilerakFragment", "Reunión: " + r.getAsunto() + " - " + r.getUsersByProfesorId());
-                    }
-                }
-            });
-        });
-    }
-
-
-
-
 }

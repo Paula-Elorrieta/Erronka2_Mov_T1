@@ -18,8 +18,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Service {
-    //private static final String ip = "192.168.0.22";
-    private static final String ip = "10.5.104.41";
+    private static final String ip = "192.168.0.22";
+    //private static final String ip = "10.5.104.41";
     private static final int port = 5000;
 
     public static Users login(String user, String password) {
@@ -232,12 +232,12 @@ public class Service {
         return null;
     }
 
-    public List<Users> getUserGuztiak() {
+    public ArrayList<Users> handleGetUsers() {
         try (Socket socket = new Socket(ip, port);
              ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream());
              CustomObjectInputStream in = new CustomObjectInputStream(socket.getInputStream())) {
 
-            out.writeObject("ERABILTZAILEAK");
+            out.writeObject("GETUSERS");
             out.flush();
 
             Object response = in.readObject();
@@ -246,8 +246,13 @@ public class Service {
                 if (responseMessage.equals("OK")) {
                     Object users = in.readObject();
                     if (users instanceof List<?>) {
-                        List<Users> userList = (List<Users>) users;
+                        ArrayList<Users> userList = (ArrayList<Users>) users;
                         Log.i("Client", "Usuarios recibidos: " + userList);
+
+                        for (Users user : userList) {
+                            Log.i("Client", "Usuario: " + user.getTipos());
+                        }
+
                         return userList;
                     } else {
                         Log.e("Client", "Error: Respuesta inesperada del servidor - No se recibió una lista de usuarios válida");
@@ -449,11 +454,15 @@ public class Service {
     }
 
     public ArrayList<Horarios> handleGetHorariosByIkasle(int ikasleId) {
-        try (Socket socket = new Socket(ip, port);
-             ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream());
-             CustomObjectInputStream in = new CustomObjectInputStream(socket.getInputStream())) {
+        Socket socket = null;
+        ObjectOutputStream out = null;
+        CustomObjectInputStream in = null;
 
-            // Enviar solicitud para obtener horarios por ikasleId
+        try {
+            socket = new Socket(ip, port);
+            out = new ObjectOutputStream(socket.getOutputStream());
+            in = new CustomObjectInputStream(socket.getInputStream());
+
             out.writeObject("IKASLEORDUTEGIA");
             out.writeObject(ikasleId);
             out.flush();
@@ -463,70 +472,47 @@ public class Service {
                 String responseMessage = (String) response;
                 if (responseMessage.equals("OK")) {
                     Object horariosObj = in.readObject();
-                    if (horariosObj instanceof ArrayList<?>) {
-                        ArrayList<Horarios> horarios = (ArrayList<Horarios>) horariosObj;
-                        Log.i("Client", "Horarios recibidos: " + horarios);
-                        // Leer y procesar los módulos
-                        Object modulosObj = in.readObject();
-                        if (modulosObj instanceof ArrayList<?>) {
-                            ArrayList<Modulos> modulos = (ArrayList<Modulos>) modulosObj;
-                            Log.i("Client", "Módulos recibidos: " + modulos);
-                        } else {
-                            Log.e("Client", "Error: No se recibió una lista de módulos válida");
-                        }
-                        // Leer y procesar los ciclos
-                        Object ciclosObj = in.readObject();
-                        if (ciclosObj instanceof ArrayList<?>) {
-                            ArrayList<Ciclos> ciclos = (ArrayList<Ciclos>) ciclosObj;
-                            Log.i("Client", "Ciclos recibidos: " + ciclos);
-                        } else {
-                            Log.e("Client", "Error: No se recibió una lista de ciclos válida");
-                        }
-                        Object usersObj = in.readObject();
-                        if (usersObj instanceof ArrayList<?>) {
-                            ArrayList<Users> users = (ArrayList<Users>) usersObj;
-                            Log.i("Client", "Usuarios recibidos: " + users);
-                        } else {
-                            Log.e("Client", "Error: No se recibió una lista de usuarios válida");
-                        }
+                    if (!(horariosObj instanceof ArrayList<?>)) return null;
+                    ArrayList<Horarios> horarios = (ArrayList<Horarios>) horariosObj;
 
-                        // Leer y procesar las matriculaciones
-                        Object matriculacionesObj = in.readObject();
-                        if (matriculacionesObj instanceof ArrayList<?>) {
-                            ArrayList<Matriculaciones> matriculaciones = (ArrayList<Matriculaciones>) matriculacionesObj;
-                            Log.i("Client", "Matriculaciones recibidas: " + matriculaciones);
-                        } else {
-                            Log.e("Client", "Error: No se recibió una lista de matriculaciones válida");
-                        }
+                    Object modulosObj = in.readObject();
+                    if (!(modulosObj instanceof ArrayList<?>)) return null;
+                    ArrayList<Modulos> modulos = (ArrayList<Modulos>) modulosObj;
 
-                        // Leer y procesar los IDs de matriculaciones
-                        Object idsObj = in.readObject();
-                        if (idsObj instanceof ArrayList<?>) {
-                            ArrayList<MatriculacionesId> ids = (ArrayList<MatriculacionesId>) idsObj;
-                            Log.i("Client", "IDs de matriculaciones recibidos: " + ids);
-                        } else {
-                            Log.e("Client", "Error: No se recibió una lista de IDs de matriculaciones válida");
-                        }
+                    Object ciclosObj = in.readObject();
+                    if (!(ciclosObj instanceof ArrayList<?>)) return null;
+                    ArrayList<Ciclos> ciclos = (ArrayList<Ciclos>) ciclosObj;
 
-                        return horarios; // Devolver los horarios
-                    } else {
-                        Log.e("Client", "Error: No se recibió una lista de horarios válida");
+
+                    Object usersObj = in.readObject();
+                    if (!(usersObj instanceof ArrayList<?>)) return null;
+                    ArrayList<Users> users = (ArrayList<Users>) usersObj;
+
+                    Object matriculacionesObj = in.readObject();
+                    if (!(matriculacionesObj instanceof ArrayList<?>)) return null;
+                    ArrayList<Matriculaciones> matriculaciones = (ArrayList<Matriculaciones>) matriculacionesObj;
+
+                    Object idsObj = in.readObject();
+                    if (!(idsObj instanceof ArrayList<?>)) return null;
+                    ArrayList<MatriculacionesId> ids = (ArrayList<MatriculacionesId>) idsObj;
+
+                    Object hIdObj = in.readObject();
+                    if (!(hIdObj instanceof ArrayList<?>)) return null;
+                    ArrayList<HorariosId> hId = (ArrayList<HorariosId>) hIdObj;
+                    for (int i = 0; i < horarios.size(); i++) {
+                        modulos.get(i).setCiclos(ciclos.get(i));
+                        horarios.get(i).setModulos(modulos.get(i));
+                        horarios.get(i).setUsers(users.get(i));
+                        horarios.get(i).setId(hId.get(i));
                     }
-                } else {
-                    Log.e("Client", "Error en la respuesta del servidor: " + responseMessage);
+                    return horarios;
                 }
-            } else {
-                Log.e("Client", "Error: La respuesta del servidor no es un String como se esperaba");
             }
-        } catch (IOException e) {
-            Log.e("Service", "Error de conexión o de E/S", e);
-        } catch (ClassNotFoundException e) {
-            Log.e("Service", "Error de deserialización", e);
-        } catch (Exception e) {
-            Log.e("Service", "Error inesperado", e);
+        } catch (IOException | ClassNotFoundException e) {
+            Log.e("Service", "Error", e);
         }
         return null;
+
+
     }
-
-
 }

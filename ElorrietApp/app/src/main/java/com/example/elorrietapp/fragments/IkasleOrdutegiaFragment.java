@@ -1,7 +1,9 @@
 package com.example.elorrietapp.fragments;
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.os.AsyncTask;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,8 +17,11 @@ import androidx.fragment.app.Fragment;
 import com.example.elorrietapp.R;
 import com.example.elorrietapp.db.Service;
 import com.example.elorrietapp.modelo.Horarios;
+import com.example.elorrietapp.modelo.Modulos;
 
 import java.util.List;
+import java.util.Map;
+import java.util.HashMap;
 
 public class IkasleOrdutegiaFragment extends Fragment {
 
@@ -45,7 +50,6 @@ public class IkasleOrdutegiaFragment extends Fragment {
         @Override
         protected List<Horarios> doInBackground(Integer... params) {
             try {
-                // Aquí realizas la llamada al servicio para obtener los horarios
                 Service myService = new Service();
                 return myService.handleGetHorariosByIkasle(params[0]);
             } catch (Exception e) {
@@ -59,37 +63,13 @@ public class IkasleOrdutegiaFragment extends Fragment {
             super.onPostExecute(horariosResult);
 
             if (horariosResult != null) {
-                tableLayoutHorarios.removeAllViews();  // Limpiar la tabla antes de llenarla
-
-                // Agregar encabezado de la tabla
-                TableRow headerRow = new TableRow(getContext());
-                TextView horaHeader = new TextView(getContext());
-                horaHeader.setText("Hora");
-                headerRow.addView(horaHeader);
-
-                TextView diaHeader = new TextView(getContext());
-                diaHeader.setText("Día");
-                headerRow.addView(diaHeader);
-
-                tableLayoutHorarios.addView(headerRow);
-
-                // Llenar la tabla con los horarios
-                for (Horarios horario : horariosResult) {
-                    TableRow row = new TableRow(getContext());
-
-                    TextView hora = new TextView(getContext());
-                    hora.setText(String.valueOf(horario.getId().getHora()));
-                    row.addView(hora);
-
-                    TextView dia = new TextView(getContext());
-                    dia.setText(horario.getId().getDia());
-                    row.addView(dia);
-
-                    tableLayoutHorarios.addView(row);
-                }
+                // Crear un adaptador de tabla con los horarios obtenidos
+                TableAdapter tableAdapter = new TableAdapter(getContext(), tableLayoutHorarios, horariosResult);
+                tableAdapter.actualizarTabla();
             } else {
-                Toast.makeText(getContext(), "Error al obtener los horarios", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getContext(), "Ezin izan dira ikaslearen ordutegiak kargatu", Toast.LENGTH_SHORT).show();
             }
+
         }
     }
 }

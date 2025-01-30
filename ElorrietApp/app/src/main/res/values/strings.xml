@@ -11,12 +11,20 @@
     <string name="atzera">Atzera</string>
     <string name="taldean_zaude">taldean zaude</string>
     <string name="kaixo">Kaixo</string>
-    <string name="ikaselen_ordutegiak">Ikaselen Ordutegiak</string>
+    <string name="irakasleen_ordutegiak">Irakasleen Ordutegiak</string>
     <string name="nire_ordutegiak">Nire ordutegiak</string>
+    <string name="irakasle_datuak">Irakasle Datuak</string>
+    <string name="ikasle_datuak">Ikasle Datuak</string>
     <string name="bilerak">Bilerak</string>
     <string name="ikasleen_datuak">Ikasleen Datuak</string>
     <string name="irakasleen_datuak">Irakasleen Datuak</string>
     <string name="profila">Profila</string>
-    <string name="Bilatu">Ikasle izena...</string>
-    <string name="BilatuIrak">Irakasle izena...</string>
+    <string name="Bilatu">Izena...</string>
+    <string name="BilatuIrak">Izena...</string>
+
+    <string name="onartuta">Onartuta</string>
+    <string name="ezeztatuta">Ezeztatuta</string>
+    <string name="gatazka">Gatazka</string>
+    <string name="onartzeke">Onartzeke</string>
+
 </resources>

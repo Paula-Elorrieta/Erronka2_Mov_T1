@@ -34,13 +34,11 @@ public class IkasleZerrendaFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_ikasle_zerrenda, container, false);
-        requireActivity().setTitle("Ikasle datuak");
+        requireActivity().setTitle(R.string.ikasle_datuak);
 
-        // Inicializar RecyclerView
         zerrendaRecyclerView = view.findViewById(R.id.Zerrenda);
         zerrendaRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
-        // Inicializar SearchView
         searchView = view.findViewById(R.id.searchView);
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override

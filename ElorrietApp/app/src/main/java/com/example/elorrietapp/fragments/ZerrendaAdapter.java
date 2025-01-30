@@ -32,8 +32,8 @@ public class ZerrendaAdapter extends RecyclerView.Adapter<ZerrendaAdapter.ViewHo
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         Users user = ikasleak.get(position);
         holder.textViewZbk.setText(String.valueOf(position + 1) + ".");
-        holder.textViewNombre.setText(user.getNombre());
-        holder.textViewUsername.setText(user.getUsername());
+        holder.textViewNombre.setText(user.getNombre() + " " + user.getApellidos());
+        holder.textViewUsername.setText(user.getEmail());
     }
 
     @Override

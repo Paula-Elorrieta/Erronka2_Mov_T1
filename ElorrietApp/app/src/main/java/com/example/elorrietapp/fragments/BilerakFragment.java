@@ -26,15 +26,16 @@ public class BilerakFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_bilerak, container, false);
+        requireActivity().setTitle(R.string.bilerak);
 
         if (Gen.getLoggedUser().getTipos() == 4) {
-            fetchReuniones(Gen.getLoggedUser().getId());
+            IrakasleBilerak(Gen.getLoggedUser().getId());
         }
 
         return view;
     }
 
-    private void fetchReuniones(int userId) {
+    private void IrakasleBilerak(int userId) {
         ExecutorService executor = Executors.newSingleThreadExecutor();
         Handler handler = new Handler(Looper.getMainLooper());
 
@@ -47,8 +48,6 @@ public class BilerakFragment extends Fragment {
                     for (Reuniones r : reuniones) {
                         Log.i("BilerakFragment", "Reunión: " + r.getAsunto() + " - " + r.getUsersByProfesorId());
                     }
-                } else {
-                    Log.e("BilerakFragment", "No se pudieron obtener las reuniones.");
                 }
             });
         });

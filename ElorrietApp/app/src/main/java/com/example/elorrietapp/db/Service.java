@@ -18,8 +18,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Service {
-    private static final String ip = "192.168.0.22";
-    //private static final String ip = "10.5.104.41";
+    //private static final String ip = "192.168.0.22";
+    private static final String ip = "10.5.104.41";
     private static final int port = 5000;
 
     public static Users login(String user, String password) {

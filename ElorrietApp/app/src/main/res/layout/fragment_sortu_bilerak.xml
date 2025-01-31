@@ -131,19 +131,19 @@
             android:orientation="horizontal">
 
             <Button
-                android:id="@+id/button2"
+                android:id="@+id/buttonGordeBileraSortu"
                 android:layout_width="165dp"
                 android:layout_height="wrap_content"
                 android:backgroundTint="@color/MoradoN"
-                android:text="Gorde" />
+                android:text="@string/Gorde" />
 
             <Button
-                android:id="@+id/button"
+                android:id="@+id/buttonAtzeraBileraSortu"
                 android:layout_width="168dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:backgroundTint="@color/design_default_color_error"
-                android:text="Atzera" />
+                android:text="@string/atzera" />
         </LinearLayout>
     </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

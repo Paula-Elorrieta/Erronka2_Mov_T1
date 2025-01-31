@@ -1,6 +1,5 @@
 package com.example.elorrietapp.fragments;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,9 +19,15 @@ import java.util.Locale;
 
 public class BilerakAdapter extends RecyclerView.Adapter<BilerakAdapter.ViewHolder> {
     private ArrayList<Reuniones> reuniones;
+    private OnItemClickListener listener;
 
-    public BilerakAdapter(ArrayList<Reuniones> reuniones) {
+    public interface OnItemClickListener {
+        void onItemClick(Reuniones reunion);
+    }
+
+    public BilerakAdapter(ArrayList<Reuniones> reuniones, OnItemClickListener listener) {
         this.reuniones = reuniones;
+        this.listener = listener;
     }
 
     @NonNull
@@ -33,8 +38,9 @@ public class BilerakAdapter extends RecyclerView.Adapter<BilerakAdapter.ViewHold
     }
 
     public void setReuniones(ArrayList<Reuniones> nuevasReuniones) {
-        this.reuniones.clear();  // Opcional: Limpiar la lista actual
+        this.reuniones.clear();
         this.reuniones.addAll(nuevasReuniones);
+        notifyDataSetChanged();
     }
 
     @Override
@@ -47,9 +53,6 @@ public class BilerakAdapter extends RecyclerView.Adapter<BilerakAdapter.ViewHold
         holder.textViewTitulua.setText(reunion.getTitulo());
         holder.textViewAsuntoa.setText(reunion.getAsunto());
 
-        Log.e("Estado", reunion.getEstadoEus());
-        Log.e("Estado", reunion.getEstado());
-
         int color;
         if (reunion.getEstadoEus().trim().equalsIgnoreCase("onartuta")) {
             color = ContextCompat.getColor(holder.itemView.getContext(), R.color.onartuta);
@@ -60,10 +63,14 @@ public class BilerakAdapter extends RecyclerView.Adapter<BilerakAdapter.ViewHold
         } else {
             color = ContextCompat.getColor(holder.itemView.getContext(), R.color.onartzeke);
         }
-
         holder.FrameEgoera.setBackgroundColor(color);
-    }
 
+        holder.itemView.setOnClickListener(v -> {
+            if (listener != null) {
+                listener.onItemClick(reunion);
+            }
+        });
+    }
 
     @Override
     public int getItemCount() {
@@ -78,10 +85,8 @@ public class BilerakAdapter extends RecyclerView.Adapter<BilerakAdapter.ViewHold
             super(itemView);
             textViewData = itemView.findViewById(R.id.textViewData);
             textViewTitulua = itemView.findViewById(R.id.textViewTitulua);
-            textViewAsuntoa = itemView.findViewById(R.id.textViewAsuntoa);
+            textViewAsuntoa = itemView.findViewById(R.id.textViewGaia);
             FrameEgoera = itemView.findViewById(R.id.FrameEgoera);
         }
     }
-
-
 }

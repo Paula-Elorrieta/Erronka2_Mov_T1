@@ -30,7 +30,7 @@
                 android:text="Titulua" />
 
             <TextView
-                android:id="@+id/textViewAsuntoa"
+                android:id="@+id/textViewGaia"
                 android:layout_width="221dp"
                 android:layout_height="wrap_content"
                 android:text="Asuntoa" />

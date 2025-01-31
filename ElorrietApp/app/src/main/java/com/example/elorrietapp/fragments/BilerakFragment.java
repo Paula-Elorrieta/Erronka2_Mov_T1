@@ -41,11 +41,28 @@ public class BilerakFragment extends Fragment {
         Button buttonSortuBilerak = view.findViewById(R.id.buttonSortuBilerak);
         BilerakZerrendak.setLayoutManager(new LinearLayoutManager(getContext()));
 
-        adapter = new BilerakAdapter(bilerak);
+        adapter = new BilerakAdapter(bilerak, reunion -> {
+            Bundle bundle = new Bundle();
+            bundle.putSerializable("reunion", reunion);
+            BilerakDetailsFragment bilerakDetailsFragment = new BilerakDetailsFragment();
+            bilerakDetailsFragment.setArguments(bundle);
+            requireActivity().getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.fragmentContainerView, bilerakDetailsFragment)
+                    .addToBackStack(null).commit();
+
+
+        });
         BilerakZerrendak.setAdapter(adapter);
 
         Users userLog = Gen.getLoggedUser();
         bilerakKargatu(userLog);
+
+        buttonSortuBilerak.setOnClickListener(v -> {
+            SortuBilerakFragment sortuBilerakFragment = new SortuBilerakFragment();
+            requireActivity().getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.fragmentContainerView, sortuBilerakFragment)
+                    .addToBackStack(null).commit();
+        });
 
         return view;
     }
@@ -64,7 +81,6 @@ public class BilerakFragment extends Fragment {
                     adapter.setReuniones(bilerak);
                     adapter.notifyDataSetChanged();
                 });
-
 
 
             } catch (Exception e) {

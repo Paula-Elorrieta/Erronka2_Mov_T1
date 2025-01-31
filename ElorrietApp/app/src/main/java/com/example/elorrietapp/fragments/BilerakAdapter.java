@@ -1,5 +1,6 @@
 package com.example.elorrietapp.fragments;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -7,6 +8,7 @@ import android.widget.FrameLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.elorrietapp.R;
@@ -45,17 +47,23 @@ public class BilerakAdapter extends RecyclerView.Adapter<BilerakAdapter.ViewHold
         holder.textViewTitulua.setText(reunion.getTitulo());
         holder.textViewAsuntoa.setText(reunion.getAsunto());
 
-        if (reunion.getEstado().equalsIgnoreCase(String.valueOf(R.string.onartuta))) {
-            holder.FrameEgoera.setBackgroundColor(holder.itemView.getResources().getColor(R.color.onartuta));
-        } else if (reunion.getEstado().equalsIgnoreCase(String.valueOf(R.string.ezeztatuta))) {
-            holder.FrameEgoera.setBackgroundColor(holder.itemView.getResources().getColor(R.color.ezeztatuta));
-        } else if (reunion.getEstado().equalsIgnoreCase(String.valueOf(R.string.gatazka))) {
-            holder.FrameEgoera.setBackgroundColor(holder.itemView.getResources().getColor(R.color.gatazka));
+        Log.e("Estado", reunion.getEstadoEus());
+        Log.e("Estado", reunion.getEstado());
+
+        int color;
+        if (reunion.getEstadoEus().trim().equalsIgnoreCase("onartuta")) {
+            color = ContextCompat.getColor(holder.itemView.getContext(), R.color.onartuta);
+        } else if (reunion.getEstadoEus().trim().equalsIgnoreCase("ezeztatuta")) {
+            color = ContextCompat.getColor(holder.itemView.getContext(), R.color.ezeztatuta);
+        } else if (reunion.getEstadoEus().trim().equalsIgnoreCase("gatazka")) {
+            color = ContextCompat.getColor(holder.itemView.getContext(), R.color.gatazka);
         } else {
-            holder.FrameEgoera.setBackgroundColor(holder.itemView.getResources().getColor(R.color.onartzeke));
+            color = ContextCompat.getColor(holder.itemView.getContext(), R.color.onartzeke);
         }
 
+        holder.FrameEgoera.setBackgroundColor(color);
     }
+
 
     @Override
     public int getItemCount() {

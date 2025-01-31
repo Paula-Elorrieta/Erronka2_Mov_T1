@@ -5,6 +5,7 @@ import android.util.Log;
 import com.example.elorrietapp.modelo.Ciclos;
 import com.example.elorrietapp.modelo.Horarios;
 import com.example.elorrietapp.modelo.HorariosId;
+import com.example.elorrietapp.modelo.Ikastetxeak;
 import com.example.elorrietapp.modelo.Matriculaciones;
 import com.example.elorrietapp.modelo.MatriculacionesId;
 import com.example.elorrietapp.modelo.Modulos;
@@ -18,8 +19,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Service {
-    private static final String ip = "192.168.0.22";
-    //private static final String ip = "10.5.104.41";
+    //private static final String ip = "192.168.0.22";
+    private static final String ip = "10.5.104.41";
     private static final int port = 5000;
 
     public static Users login(String user, String password) {
@@ -343,7 +344,6 @@ public class Service {
                     if (reunionesObj instanceof List<?>) {
                         ArrayList<Reuniones> reuniones = (ArrayList<Reuniones>) reunionesObj;
                         Log.i("Client", "Reuniones recibidas: " + reuniones);
-
                         Object irakasleakObj = in.readObject();
                         if (irakasleakObj instanceof List<?>) {
                             List<Users> irakasleak = (List<Users>) irakasleakObj;
@@ -512,7 +512,41 @@ public class Service {
             Log.e("Service", "Error", e);
         }
         return null;
+    }
 
+    public ArrayList<Ikastetxeak> handleGetIkastetxeak() {
+        try (Socket socket = new Socket(ip, port);
+             ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream());
+             CustomObjectInputStream in = new CustomObjectInputStream(socket.getInputStream())) {
 
+            out.writeObject("IKASTETXEAK");
+            out.flush();
+
+            Object response = in.readObject();
+            if (response instanceof String) {
+                String responseMessage = (String) response;
+                if (responseMessage.equals("OK")) {
+                    Object ikastetxeakObj = in.readObject();
+                    if (ikastetxeakObj instanceof ArrayList<?>) {
+                        ArrayList<Ikastetxeak> ikastetxeak = (ArrayList<Ikastetxeak>) ikastetxeakObj;
+                        Log.i("Client", "Ikastetxeak recibidos: " + ikastetxeak);
+                        return ikastetxeak;
+                    } else {
+                        Log.e("Client", "Error: No se recibió una lista de ikastetxeak válida");
+                    }
+                } else {
+                    Log.e("Client", "Error en la respuesta del servidor: " + responseMessage);
+                }
+            } else {
+                Log.e("Client", "Error: La respuesta del servidor no es un String como se esperaba");
+            }
+        } catch (IOException e) {
+            Log.e("Service", "Error de conexión o de E/S", e);
+        } catch (ClassNotFoundException e) {
+            Log.e("Service", "Error de deserialización", e);
+        } catch (Exception e) {
+            Log.e("Service", "Error inesperado", e);
+        }
+        return null;
     }
 }

@@ -40,8 +40,7 @@
             android:id="@+id/FrameEgoera"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="#8BC34A"
-            android:backgroundTint="#8BC34A">
+            android:background="#4CAF50">
 
         </FrameLayout>
 

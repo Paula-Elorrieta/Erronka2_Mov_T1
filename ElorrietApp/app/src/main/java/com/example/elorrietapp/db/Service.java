@@ -10,6 +10,7 @@ import com.example.elorrietapp.modelo.Matriculaciones;
 import com.example.elorrietapp.modelo.MatriculacionesId;
 import com.example.elorrietapp.modelo.Modulos;
 import com.example.elorrietapp.modelo.Reuniones;
+import com.example.elorrietapp.modelo.Tipos;
 import com.example.elorrietapp.modelo.Users;
 
 import java.io.IOException;
@@ -250,9 +251,13 @@ public class Service {
                     if (users instanceof List<?>) {
                         ArrayList<Users> userList = (ArrayList<Users>) users;
                         Log.i("Client", "Usuarios recibidos: " + userList);
-
-                        for (Users user : userList) {
-                            Log.i("Client", "Usuario: " + user.getTipos());
+                       //Recibir tipos de usuario
+                        Object tipos = in.readObject();
+                        if (tipos instanceof List<?>) {
+                            ArrayList<Tipos> tiposList = (ArrayList<Tipos>) tipos;
+                            for (int i = 0; i < userList.size(); i++) {
+                                userList.get(i).setTipos(tiposList.get(i).getId());
+                            }
                         }
 
                         return userList;
@@ -547,6 +552,38 @@ public class Service {
             Log.e("Service", "Error inesperado", e);
         }
         return null;
+    }
+
+    public void handleBileraSortu(Reuniones reunion) {
+        try (Socket socket = new Socket(ip, port);
+             ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream());
+             ObjectInputStream in = new ObjectInputStream(socket.getInputStream())) {
+
+            // Enviar el objeto Reuniones al servidor
+            out.writeObject("BILERA_SORTU");
+            out.writeObject(reunion);
+            out.flush();
+
+            // Leer la respuesta del servidor
+            Object response = in.readObject();
+            if (response instanceof String) {
+                String responseMessage = (String) response;
+                if ("OK".equals(responseMessage)) {
+                    Log.i("Client", "La reunión se ha creado correctamente.");
+                } else {
+                    Log.e("Client", "Error: " + responseMessage);
+                }
+            } else {
+                Log.e("Client", "Error: La respuesta del servidor no es un String como se esperaba.");
+            }
+
+        } catch (IOException e) {
+            Log.e("Client", "Error de conexión o de E/S", e);
+        } catch (ClassNotFoundException e) {
+            Log.e("Client", "Error de deserialización", e);
+        } catch (Exception e) {
+            Log.e("Client", "Error inesperado", e);
+        }
     }
 
 

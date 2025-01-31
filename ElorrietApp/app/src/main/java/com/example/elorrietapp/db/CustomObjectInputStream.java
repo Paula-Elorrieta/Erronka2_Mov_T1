@@ -44,6 +44,9 @@ public class CustomObjectInputStream extends ObjectInputStream {
         if (desc.getName().equals("modelo.Ikastetxeak")) {
             return com.example.elorrietapp.modelo.Ikastetxeak.class;
         }
+        if (desc.getName().equals("modelo.Tipos")) {
+            return com.example.elorrietapp.modelo.Tipos.class;
+        }
 
 
 

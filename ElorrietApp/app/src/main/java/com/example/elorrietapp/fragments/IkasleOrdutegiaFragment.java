@@ -16,6 +16,7 @@ import androidx.fragment.app.Fragment;
 
 import com.example.elorrietapp.R;
 import com.example.elorrietapp.db.Service;
+import com.example.elorrietapp.gen.Gen;
 import com.example.elorrietapp.modelo.Horarios;
 import com.example.elorrietapp.modelo.Modulos;
 
@@ -35,7 +36,7 @@ public class IkasleOrdutegiaFragment extends Fragment {
 
         tableLayoutHorarios = view.findViewById(R.id.tableLayoutHorarios);
 
-        obtenerHorariosAsync(3);
+        obtenerHorariosAsync(Gen.getLoggedUser().getId());
 
         return view;
     }

@@ -13,6 +13,7 @@ import com.example.elorrietapp.modelo.Reuniones;
 import com.example.elorrietapp.modelo.Users;
 
 import java.io.IOException;
+import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.util.ArrayList;
@@ -343,12 +344,9 @@ public class Service {
                     Object reunionesObj = in.readObject();
                     if (reunionesObj instanceof List<?>) {
                         ArrayList<Reuniones> reuniones = (ArrayList<Reuniones>) reunionesObj;
-                        Log.i("Client", "Reuniones recibidas: " + reuniones);
                         Object irakasleakObj = in.readObject();
                         if (irakasleakObj instanceof List<?>) {
                             List<Users> irakasleak = (List<Users>) irakasleakObj;
-                            Log.i("Client", "Irakasleak recibidos: " + irakasleak);
-
                             for (int i = 0; i < reuniones.size(); i++) {
                                 reuniones.get(i).setUsersByProfesorId(irakasleak.get(i));
                             }
@@ -514,13 +512,14 @@ public class Service {
         return null;
     }
 
-    public ArrayList<Ikastetxeak> handleGetIkastetxeak() {
+    public ArrayList<Ikastetxeak> handleGetAllIkastetxeak() {
         try (Socket socket = new Socket(ip, port);
              ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream());
              CustomObjectInputStream in = new CustomObjectInputStream(socket.getInputStream())) {
 
-            out.writeObject("IKASTETXEAK");
+            out.writeObject("ALLIKASTETXEAK"); // Nueva petición para obtener todos los ikastetxeak
             out.flush();
+            Log.i("Service", "Solicitud enviada para obtener todos los ikastetxeak");
 
             Object response = in.readObject();
             if (response instanceof String) {
@@ -532,13 +531,13 @@ public class Service {
                         Log.i("Client", "Ikastetxeak recibidos: " + ikastetxeak);
                         return ikastetxeak;
                     } else {
-                        Log.e("Client", "Error: No se recibió una lista de ikastetxeak válida");
+                        Log.e("Client", "Error: No se recibió una lista válida de ikastetxeak.");
                     }
                 } else {
                     Log.e("Client", "Error en la respuesta del servidor: " + responseMessage);
                 }
             } else {
-                Log.e("Client", "Error: La respuesta del servidor no es un String como se esperaba");
+                Log.e("Client", "Error: La respuesta del servidor no es un String esperado.");
             }
         } catch (IOException e) {
             Log.e("Service", "Error de conexión o de E/S", e);
@@ -549,4 +548,6 @@ public class Service {
         }
         return null;
     }
+
+
 }

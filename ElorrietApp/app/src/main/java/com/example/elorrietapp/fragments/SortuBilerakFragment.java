@@ -28,8 +28,8 @@ public class SortuBilerakFragment extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_sortu_bilerak, container, false);
 
-        spinnerZentroa = view.findViewById(R.id.spinnerZentroa); // Asegúrate de tener este Spinner en tu XML
-
+        // Inicializar spinner antes de cargar los datos
+        spinnerZentroa = view.findViewById(R.id.spinnerZentroa);
         cargarIkastetxeak();
 
         return view;
@@ -39,22 +39,25 @@ public class SortuBilerakFragment extends Fragment {
         ExecutorService executor = Executors.newSingleThreadExecutor();
         executor.execute(() -> {
             try {
-                ikastetxeakList = service.handleGetIkastetxeak();
-                if (ikastetxeakList != null) {
-                    ArrayList<String> nombres = new ArrayList<>();
-                    for (Ikastetxeak ikastetxea : ikastetxeakList) {
-                        nombres.add(ikastetxea.getNOM());
+                ikastetxeakList = service.handleGetAllIkastetxeak();
+
+                if (ikastetxeakList != null && !ikastetxeakList.isEmpty()) {
+                    ArrayList<String> ikastetxeakNombres = new ArrayList<>();
+                    for (Ikastetxeak ikastetxeak : ikastetxeakList) {
+                        ikastetxeakNombres.add(ikastetxeak.getNOM());
                     }
 
                     // Actualizar UI en el hilo principal
-                    getActivity().runOnUiThread(() -> {
-                        ArrayAdapter<String> adapter = new ArrayAdapter<>(getContext(),
-                                android.R.layout.simple_spinner_item, nombres);
-                        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-                        spinnerZentroa.setAdapter(adapter);
-                    });
+                    if (getActivity() != null) {
+                        getActivity().runOnUiThread(() -> {
+                            ArrayAdapter<String> adapter = new ArrayAdapter<>(getContext(),
+                                    android.R.layout.simple_spinner_item, ikastetxeakNombres);
+                            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                            spinnerZentroa.setAdapter(adapter);
+                        });
+                    }
                 } else {
-                    Log.e("SortuBilerakFragment", "Error: ikastetxeakList es null");
+                    Log.e("SortuBilerakFragment", "Lista de ikastetxeak vacía o nula");
                 }
             } catch (Exception e) {
                 Log.e("SortuBilerakFragment", "Error obteniendo ikastetxeak", e);

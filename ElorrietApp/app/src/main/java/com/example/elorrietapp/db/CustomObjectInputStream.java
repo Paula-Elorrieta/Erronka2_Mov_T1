@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectStreamClass;
 
+
 public class CustomObjectInputStream extends ObjectInputStream {
 
     public CustomObjectInputStream(java.io.InputStream in) throws IOException {
@@ -24,7 +25,7 @@ public class CustomObjectInputStream extends ObjectInputStream {
         if (desc.getName().equals("modelo.Modulos")) {
             return com.example.elorrietapp.modelo.Modulos.class;
         }
-        // Resolver la clase Modulos
+        // Resolver la clase HorariosId
         if (desc.getName().equals("modelo.HorariosId")) {
             return com.example.elorrietapp.modelo.HorariosId.class;
         }
@@ -32,23 +33,26 @@ public class CustomObjectInputStream extends ObjectInputStream {
         if (desc.getName().equals("modelo.Reuniones")) {
             return com.example.elorrietapp.modelo.Reuniones.class;
         }
+        // Resolver la clase Matriculaciones
         if (desc.getName().equals("modelo.Matriculaciones")) {
             return com.example.elorrietapp.modelo.Matriculaciones.class;
         }
+        // Resolver la clase Ciclos
         if (desc.getName().equals("modelo.Ciclos")) {
             return com.example.elorrietapp.modelo.Ciclos.class;
         }
+        // Resolver la clase MatriculacionesId
         if (desc.getName().equals("modelo.MatriculacionesId")) {
             return com.example.elorrietapp.modelo.MatriculacionesId.class;
         }
+        // Resolver la clase Ikastetxeak
         if (desc.getName().equals("modelo.Ikastetxeak")) {
             return com.example.elorrietapp.modelo.Ikastetxeak.class;
         }
+        // Resolver la clase Tipos
         if (desc.getName().equals("modelo.Tipos")) {
             return com.example.elorrietapp.modelo.Tipos.class;
         }
-
-
 
         return super.resolveClass(desc);
     }

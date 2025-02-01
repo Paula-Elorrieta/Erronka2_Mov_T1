@@ -1,6 +1,8 @@
 package com.example.elorrietapp.db;
 
+import android.util.Base64;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.example.elorrietapp.modelo.Ciclos;
 import com.example.elorrietapp.modelo.Horarios;
@@ -21,8 +23,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Service {
-    //private static final String ip = "192.168.0.22";
-    private static final String ip = "10.5.104.41";
+    private static final String ip = "192.168.0.22";
+    //private static final String ip = "10.5.104.41";
     private static final int port = 5000;
 
     public static Users login(String user, String password) {
@@ -251,7 +253,7 @@ public class Service {
                     if (users instanceof List<?>) {
                         ArrayList<Users> userList = (ArrayList<Users>) users;
                         Log.i("Client", "Usuarios recibidos: " + userList);
-                       //Recibir tipos de usuario
+                        //Recibir tipos de usuario
                         Object tipos = in.readObject();
                         if (tipos instanceof List<?>) {
                             ArrayList<Tipos> tiposList = (ArrayList<Tipos>) tipos;
@@ -419,6 +421,40 @@ public class Service {
         return null;
     }
 
+    public String handleUpdateReunion(int id, String estadoEus, String estado) {
+        try (Socket socket = new Socket(ip, port);
+             ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream());
+             ObjectInputStream in = new ObjectInputStream(socket.getInputStream())) {
+
+            out.writeObject("BILERA_UPDATE_ANDROID");
+            out.writeObject(id);
+            out.writeObject(estadoEus);
+            out.writeObject(estado);
+            out.flush();
+
+            Object response = in.readObject();
+            if (response instanceof String) {
+                String responseMessage = (String) response;
+                if ("OK".equals(responseMessage)) {
+                    return "Bilera eguneratu da";
+                } else {
+                    Log.e("Client", "Error: " + responseMessage);
+                }
+            } else {
+                Log.e("Client", "Error: La respuesta del servidor no es un String como se esperaba.");
+            }
+
+        } catch (IOException e) {
+            Log.e("Client", "Error de conexión o de E/S", e);
+        } catch (ClassNotFoundException e) {
+            Log.e("Client", "Error de deserialización", e);
+        } catch (Exception e) {
+            Log.e("Client", "Error inesperado", e);
+        }
+
+        return "Errorea";
+    }
+
     public ArrayList<Users> handleGetIrakasleakByIkasleak(int ikasleId) {
         try (Socket socket = new Socket(ip, port);
              ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream());
@@ -559,12 +595,10 @@ public class Service {
              ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream());
              ObjectInputStream in = new ObjectInputStream(socket.getInputStream())) {
 
-            // Enviar el objeto Reuniones al servidor
             out.writeObject("BILERA_SORTU");
             out.writeObject(reunion);
             out.flush();
 
-            // Leer la respuesta del servidor
             Object response = in.readObject();
             if (response instanceof String) {
                 String responseMessage = (String) response;

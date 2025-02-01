@@ -1,6 +1,8 @@
 package com.example.elorrietapp.fragments;
 
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.location.Location;
 import android.os.Bundle;
 
@@ -8,13 +10,18 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
+import android.util.Base64;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.example.elorrietapp.R;
 import com.example.elorrietapp.db.Service;
 import com.example.elorrietapp.gen.Gen;
@@ -30,19 +37,27 @@ import org.osmdroid.util.GeoPoint;
 import org.osmdroid.views.MapView;
 import org.osmdroid.views.overlay.Marker;
 
+import java.io.ByteArrayInputStream;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Locale;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+
 public class BilerakDetailsFragment extends Fragment {
 
     private static final int LOCATION_PERMISSION_REQUEST_CODE = 100;
     private ArrayList<Ikastetxeak> ikastetxeakList = new ArrayList<>();
+    private ArrayList<Reuniones> reunionesList = new ArrayList<>();
     private Service service = new Service();
     private MapView mapaIkuspegia;
     private FusedLocationProviderClient fusedLocationClient;
+    private FrameLayout frameEgora;
+    private TextView textViewEgoera;
+    private Button btnOnartu;
+    private Button btnEzeztatu;
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -50,20 +65,16 @@ public class BilerakDetailsFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_bilerak_details, container, false);
         requireActivity().setTitle(R.string.bilerakDetails);
 
-        // Configurar OSMDroid
         Configuration.getInstance().setUserAgentValue(requireActivity().getPackageName());
 
-        // Inicializar MapView
         mapaIkuspegia = view.findViewById(R.id.mapa);
         mapaIkuspegia.setTileSource(TileSourceFactory.MAPNIK);
         mapaIkuspegia.setBuiltInZoomControls(true);
         mapaIkuspegia.setMultiTouchControls(true);
-        mapaIkuspegia.getController().setZoom(15.0); // Zoom inicial
+        mapaIkuspegia.getController().setZoom(15.0);
 
-        // Inicializar ubicación
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(requireActivity());
 
-        // Obtener la reunión desde el Bundle
         Bundle bundle = getArguments();
         if (bundle == null || !bundle.containsKey("reunion")) {
             Log.e("BilerakDetailsFragment", "No se encontró la reunión en el bundle.");
@@ -76,14 +87,17 @@ public class BilerakDetailsFragment extends Fragment {
             return view;
         }
 
-        // Asignar valores a los TextView
-        TextView textViewEgoera = view.findViewById(R.id.textViewEgoera);
-        FrameLayout frameEgora = view.findViewById(R.id.FrameEgora);
+        reunionesList = (ArrayList<Reuniones>) bundle.getSerializable("bilerak");
+
+        textViewEgoera = view.findViewById(R.id.textViewEgoera);
+        frameEgora = view.findViewById(R.id.FrameEgora);
         TextView textViewGaia = view.findViewById(R.id.textViewGaia);
         TextView textViewData = view.findViewById(R.id.textViewData);
         TextView textViewTituloa = view.findViewById(R.id.textViewTituloa);
         TextView textViewNorekin = view.findViewById(R.id.textViewNorekin);
         TextView textViewNon = view.findViewById(R.id.textViewNon);
+        btnOnartu = view.findViewById(R.id.btnOnartu);
+        btnEzeztatu = view.findViewById(R.id.btnEzeztatu);
 
         koloreaEzarri(frameEgora, reunion);
         textViewEgoera.setText("Egoera: " + reunion.getEstadoEus());
@@ -95,8 +109,31 @@ public class BilerakDetailsFragment extends Fragment {
 
         if (Gen.getLoggedUser().getTipos() == 3) {
             textViewNorekin.setText("Norekin: " + reunion.getUsersByAlumnoId().getNombre());
+            btnOnartu.setVisibility(View.VISIBLE);
+            btnEzeztatu.setVisibility(View.VISIBLE);
+
+            if (reunion.getEstadoEus().equals("onartuta")) {
+                btnOnartu.setEnabled(false);
+            }
+
+            if (reunion.getEstadoEus().equals("ezeztatuta")) {
+                btnEzeztatu.setEnabled(false);
+            }
+
+            btnOnartu.setOnClickListener(v -> {
+                bileraOnartu(reunion);
+
+            });
+
+            btnEzeztatu.setOnClickListener(v -> {
+                bileraEzeztatu(reunion);
+            });
+
+
         } else {
             textViewNorekin.setText("Norekin: " + reunion.getUsersByProfesorId().getNombre());
+            btnOnartu.setVisibility(View.GONE);
+            btnEzeztatu.setVisibility(View.GONE);
         }
 
         IkastetxeakKargatu(reunion.getIdCentro(), ikastetxeak -> {
@@ -201,6 +238,69 @@ public class BilerakDetailsFragment extends Fragment {
         });
     }
 
+    public void bileraOnartu(Reuniones reunion) {
+        for (Reuniones r : reunionesList) {
+            if (r.getFecha().equals(reunion.getFecha())) {
+                reunion.setEstadoEus("gatazka");
+                reunion.setEstado("conflicto");
+                ExecutorService executor = Executors.newSingleThreadExecutor();
+                executor.execute(() -> {
+                    try {
+                        String mezua = service.handleUpdateReunion(reunion.getIdReunion(), reunion.getEstadoEus(), reunion.getEstado());
+                        getActivity().runOnUiThread(() -> {
+                            koloreaEzarri(frameEgora, reunion);
+                            textViewEgoera.setText("Egoera: gatazka");
+                            Toast.makeText(requireActivity(), mezua, Toast.LENGTH_SHORT).show();
+                            btnOnartu.setEnabled(true);
+                            btnEzeztatu.setEnabled(true);
+                        });
+                    } catch (Exception e) {
+                        Log.e("BilerakDetailsFragment", "Error actualizando reunión", e);
+                    }
+                });
+                break;
+            } else {
+                reunion.setEstadoEus("onartuta");
+                reunion.setEstado("aceptada");
+                ExecutorService executor = Executors.newSingleThreadExecutor();
+                executor.execute(() -> {
+                    try {
+                        String mezua = service.handleUpdateReunion(reunion.getIdReunion(), reunion.getEstadoEus(), reunion.getEstado());
+                        getActivity().runOnUiThread(() -> {
+                            koloreaEzarri(frameEgora, reunion);
+                            textViewEgoera.setText("Egoera: onartuta");
+                            Toast.makeText(requireActivity(), mezua, Toast.LENGTH_SHORT).show();
+                            btnOnartu.setEnabled(false);
+                            btnEzeztatu.setEnabled(true);
+                        });
+                    } catch (Exception e) {
+                        Log.e("BilerakDetailsFragment", "Error actualizando reunión", e);
+                    }
+                });
+                break;
+            }
+        }
+    }
+
+    public void bileraEzeztatu(Reuniones reunion) {
+        reunion.setEstadoEus("ezeztatuta");
+        reunion.setEstado("denegada");
+        ExecutorService executor = Executors.newSingleThreadExecutor();
+        executor.execute(() -> {
+            try {
+                String mezua = service.handleUpdateReunion(reunion.getIdReunion(), reunion.getEstadoEus(), reunion.getEstado());
+                getActivity().runOnUiThread(() -> {
+                    koloreaEzarri(frameEgora, reunion);
+                    textViewEgoera.setText("Egoera: ezeztatuta");
+                    Toast.makeText(requireActivity(), mezua, Toast.LENGTH_SHORT).show();
+                    btnEzeztatu.setEnabled(false);
+                    btnOnartu.setEnabled(true);
+                });
+            } catch (Exception e) {
+                Log.e("BilerakDetailsFragment", "Error actualizando reunión", e);
+            }
+        });
+    }
 
     public interface IkastetxeakCallback {
         void onIkastetxeakLoaded(Ikastetxeak ikastetxeak);

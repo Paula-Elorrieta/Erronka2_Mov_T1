@@ -44,6 +44,7 @@ public class BilerakFragment extends Fragment {
         adapter = new BilerakAdapter(bilerak, reunion -> {
             Bundle bundle = new Bundle();
             bundle.putSerializable("reunion", reunion);
+            bundle.putSerializable("bilerak", bilerak);
             BilerakDetailsFragment bilerakDetailsFragment = new BilerakDetailsFragment();
             bilerakDetailsFragment.setArguments(bundle);
             requireActivity().getSupportFragmentManager().beginTransaction()

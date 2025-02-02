@@ -19,11 +19,12 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
 public class Service {
-    private static final String ip = "192.168.0.22";
+    private static final String ip = "192.168.1.74";
     //private static final String ip = "10.5.104.41";
     private static final int port = 5000;
 
@@ -86,8 +87,8 @@ public class Service {
 
             // Enviar la solicitud de login al servidor
             out.writeObject("ALDATUPASS");
-            out.writeObject(user);  // Enviar el nombre de usuario
-            out.flush();  // Asegúrate de que los datos se envíen
+            out.writeObject(user);
+            out.flush();
 
             // Leer la respuesta del servidor
             Object response = in.readObject();
@@ -595,30 +596,66 @@ public class Service {
              ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream());
              ObjectInputStream in = new ObjectInputStream(socket.getInputStream())) {
 
-            out.writeObject("BILERA_SORTU");
-            out.writeObject(reunion);
-            out.flush();
+            // Verificar si el socket está conectado
+            if (socket.isConnected() && !socket.isClosed()) {
+                // Enviar el mensaje inicial
+                out.writeObject("BILERA_SORTU_ANDROID");
 
-            Object response = in.readObject();
-            if (response instanceof String) {
-                String responseMessage = (String) response;
-                if ("OK".equals(responseMessage)) {
-                    Log.i("Client", "La reunión se ha creado correctamente.");
+
+                Integer id = 99;
+                Users usersByProfesorId = reunion.getUsersByProfesorId();
+                Users usersByAlumnoId = reunion.getUsersByAlumnoId();
+                String estado = reunion.getEstado();
+                String estadoEus = reunion.getEstadoEus();
+                String idCentro = reunion.getIdCentro();
+                String titulo = reunion.getTitulo();
+                String asunto = reunion.getAsunto();
+                String aula = reunion.getAula();
+                Timestamp fecha = reunion.getFecha();
+
+                out.writeObject(id);
+                out.writeObject(usersByProfesorId);
+                out.writeObject(usersByAlumnoId);
+                out.writeObject(estado);
+                out.writeObject(estadoEus);
+                out.writeObject(idCentro);
+                out.writeObject(titulo);
+                out.writeObject(asunto);
+                out.writeObject(aula);
+                out.writeObject(fecha);
+
+                out.flush();
+
+                // Leer la respuesta del servidor
+                Object response = in.readObject();
+                if (response instanceof String) {
+                    String responseMessage = (String) response;
+                    if ("OK".equals(responseMessage)) {
+                        Log.i("Client", "La reunión se ha creado correctamente.");
+                    } else {
+                        Log.e("Client", "Error: " + responseMessage);
+                    }
                 } else {
-                    Log.e("Client", "Error: " + responseMessage);
+                    Log.e("Client", "Error: La respuesta del servidor no es un String como se esperaba.");
                 }
             } else {
-                Log.e("Client", "Error: La respuesta del servidor no es un String como se esperaba.");
+                Log.e("Client", "El socket no está conectado.");
             }
 
         } catch (IOException e) {
-            Log.e("Client", "Error de conexión o de E/S", e);
+            Log.e("Client", "Error de conexión o de E/S: " + e.getMessage());
         } catch (ClassNotFoundException e) {
-            Log.e("Client", "Error de deserialización", e);
+            Log.e("Client", "Error de deserialización: " + e.getMessage());
         } catch (Exception e) {
-            Log.e("Client", "Error inesperado", e);
+            Log.e("Client", "Error inesperado: " + e.getMessage());
         }
     }
+
+
+
+
+
+
 
 
 }

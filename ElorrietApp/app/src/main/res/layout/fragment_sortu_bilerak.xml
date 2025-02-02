@@ -113,14 +113,17 @@
             android:text="Aukeratu data:"
             android:textSize="16sp" />
 
-        <EditText
-            android:id="@+id/editTextData"
+        <TextView
+            android:id="@+id/textViewData"
             android:layout_width="match_parent"
             android:layout_height="55dp"
-            android:ems="10"
-            android:hint="Data"
-            android:inputType="date" />
-
+            android:gravity="center"
+            android:background="@android:drawable/editbox_background"
+            android:text="Data"
+            android:textSize="16sp"
+            android:padding="10dp"
+            android:clickable="true"
+            android:focusable="true"/>
         <Space
             android:layout_width="match_parent"
             android:layout_height="48dp" />

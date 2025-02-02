@@ -4,6 +4,7 @@ import android.util.Base64;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.example.elorrietapp.gen.Gen;
 import com.example.elorrietapp.modelo.Ciclos;
 import com.example.elorrietapp.modelo.Horarios;
 import com.example.elorrietapp.modelo.HorariosId;
@@ -24,7 +25,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Service {
-    private static final String ip = "192.168.1.74";
+    private static final String ip = "192.168.0.22";
     //private static final String ip = "10.5.104.41";
     private static final int port = 5000;
 
@@ -651,11 +652,48 @@ public class Service {
         }
     }
 
+    public void handleEmailBilera(Reuniones bilera, String ikastetxea) {
+        try (Socket socket = new Socket(ip, port);
+             ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream());
+             ObjectInputStream in = new ObjectInputStream(socket.getInputStream())) {
 
+            if (socket.isConnected() && !socket.isClosed()) {
+                out.writeObject("EMAILBILERA");
 
+                if (Gen.getLoggedUser().getTipos() == 3) {
+                    out.writeObject(bilera.getUsersByProfesorId().getEmail());
+                    Log.e("Client", "Email: " + bilera.getUsersByProfesorId().getEmail());
+                } else {
+                    out.writeObject(bilera.getUsersByAlumnoId().getEmail());
+                    Log.e("Client", "Email: " + bilera.getUsersByAlumnoId().getEmail());
+                }
 
+                out.writeObject(bilera.getAsunto());
+                out.writeObject(bilera.getFecha());
+                out.writeObject("Ikastetxea: " + ikastetxea + " eta aula: " + bilera.getAula());
+                out.flush();
 
+                Object response = in.readObject();
+                if (response instanceof String) {
+                    String responseMessage = (String) response;
+                    if ("OK".equals(responseMessage)) {
+                        Log.i("Client", "El email se ha enviado correctamente.");
+                    } else {
+                        Log.e("Client", "Error: " + responseMessage);
+                    }
+                } else {
+                    Log.e("Client", "Error: La respuesta del servidor no es un String como se esperaba.");
+                }
+            } else {
+                Log.e("Client", "El socket no está conectado.");
+            }
 
-
-
+        } catch (IOException e) {
+            Log.e("Client", "Error de conexión o de E/S: " + e.getMessage());
+        } catch (ClassNotFoundException e) {
+            Log.e("Client", "Error de deserialización: " + e.getMessage());
+        } catch (Exception e) {
+            Log.e("Client", "Error inesperado: " + e.getMessage());
+        }
+    }
 }

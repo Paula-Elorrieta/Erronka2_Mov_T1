@@ -132,8 +132,18 @@ public class BilerakDetailsFragment extends Fragment {
 
         } else {
             textViewNorekin.setText("Norekin: " + reunion.getUsersByProfesorId().getNombre());
-            btnOnartu.setVisibility(View.GONE);
             btnEzeztatu.setVisibility(View.GONE);
+
+            if (reunion.getEstadoEus().equals("onartzeke")) {
+                btnOnartu.setVisibility(View.VISIBLE);
+                btnOnartu.setOnClickListener(v -> {
+                    bileraOnartu(reunion);
+
+                });
+            } else {
+                btnOnartu.setVisibility(View.GONE);
+            }
+
         }
 
         IkastetxeakKargatu(reunion.getIdCentro(), ikastetxeak -> {

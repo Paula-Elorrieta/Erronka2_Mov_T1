@@ -2,7 +2,9 @@ package com.example.elorrietapp.fragments;
 
 import android.app.DatePickerDialog;
 import android.os.Bundle;
+
 import androidx.fragment.app.Fragment;
+
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -44,12 +46,15 @@ public class SortuBilerakFragment extends Fragment {
     private Users selectedProfesor;
     private Users selectedAlumno;
     private Ikastetxeak selectedCentro;
+    private int defaultIndex = 0;
     private Timestamp selectedTimestamp;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_sortu_bilerak, container, false);
+        requireActivity().setTitle(R.string.bilerakSortu);
+
         Button buttonSortuBilerak = view.findViewById(R.id.buttonGordeBileraSortu);
         Button buttonAtzera = view.findViewById(R.id.buttonAtzeraBileraSortu);
         spinnerZentroa = view.findViewById(R.id.spinnerZentroa);
@@ -59,11 +64,14 @@ public class SortuBilerakFragment extends Fragment {
         editTextAsuntoa = view.findViewById(R.id.editTextAsuntoa);
         textViewData = view.findViewById(R.id.textViewData);
 
-        cargarUsuarios();
-        cargarIkastetxeak();
+        erabiltzaileakKargatu();
+        ikastetxeakKargatu();
 
-        // Configurar el DatePicker para el TextView de la fecha
         textViewData.setOnClickListener(v -> showDatePickerDialog());
+
+        buttonAtzera.setOnClickListener(v -> {
+            requireActivity().getSupportFragmentManager().popBackStack();
+        });
 
         buttonSortuBilerak.setOnClickListener(v -> {
             if (selectedCentro == null) {
@@ -90,7 +98,7 @@ public class SortuBilerakFragment extends Fragment {
             bilerak.setAula(aula);
             bilerak.setTitulo(titulo);
             bilerak.setAsunto(asunto);
-            bilerak.setFecha(selectedTimestamp); // Usar la fecha seleccionada
+            bilerak.setFecha(selectedTimestamp);
             bilerak.setIdCentro(selectedCentro.getCCEN());
 
             Users loggedUser = Gen.getLoggedUser();
@@ -106,16 +114,24 @@ public class SortuBilerakFragment extends Fragment {
 
             Log.e("SortuBilerakFragment", "Bilera creada: " + bilerak.getIdCentro());
 
-            // Usar ExecutorService para ejecutar la llamada en un hilo secundario
             ExecutorService executor = Executors.newSingleThreadExecutor();
             executor.execute(() -> Mysql.insertarReunion(bilerak));
-            Toast.makeText(getContext(), "Bilera sortua", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getContext(), "Bilera sortuta", Toast.LENGTH_SHORT).show();
+            emailBidali(bilerak, selectedCentro.getNOM());
+
+            // vaciar los campos
+            editTextGela.setText("");
+            editTextTitulua.setText("");
+            editTextAsuntoa.setText("");
+            textViewData.setText("Data");
+            spinnerZentroa.setSelection(defaultIndex);
+
         });
 
         return view;
     }
 
-    private void cargarIkastetxeak() {
+    private void ikastetxeakKargatu() {
         ExecutorService executor = Executors.newSingleThreadExecutor();
         executor.execute(() -> {
             try {
@@ -142,6 +158,17 @@ public class SortuBilerakFragment extends Fragment {
                             adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                             spinnerZentroa.setAdapter(adapter);
 
+                            defaultIndex = 0;
+                            for (int i = 0; i < ikastetxeakList.size(); i++) {
+                                if ("ELORRIETA-ERREKA MARI".equals(ikastetxeakList.get(i).getNOM())) {
+                                    defaultIndex = i;
+                                    break;
+                                }
+                            }
+
+                            spinnerZentroa.setSelection(defaultIndex);
+                            selectedCentro = ikastetxeakList.get(defaultIndex);
+
                             spinnerZentroa.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                                 @Override
                                 public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
@@ -165,7 +192,7 @@ public class SortuBilerakFragment extends Fragment {
         });
     }
 
-    private void cargarUsuarios() {
+    private void erabiltzaileakKargatu() {
         ExecutorService executor = Executors.newSingleThreadExecutor();
         executor.execute(() -> {
             try {
@@ -214,7 +241,6 @@ public class SortuBilerakFragment extends Fragment {
         });
     }
 
-    // Mostrar el DatePicker
     private void showDatePickerDialog() {
         Calendar calendar = Calendar.getInstance();
         int year = calendar.get(Calendar.YEAR);
@@ -226,9 +252,8 @@ public class SortuBilerakFragment extends Fragment {
             public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
                 monthOfYear = monthOfYear + 1; // Ajustar el mes
                 String selectedDate = dayOfMonth + "/" + monthOfYear + "/" + year;
-                textViewData.setText(selectedDate); // Mostrar la fecha en el TextView
+                textViewData.setText(selectedDate);
 
-                // Convertir la fecha seleccionada en un Timestamp
                 Calendar selectedCalendar = Calendar.getInstance();
                 selectedCalendar.set(year, monthOfYear - 1, dayOfMonth);
                 selectedTimestamp = new Timestamp(selectedCalendar.getTimeInMillis());
@@ -236,5 +261,16 @@ public class SortuBilerakFragment extends Fragment {
         }, year, month, day);
 
         datePickerDialog.show();
+    }
+
+    private void emailBidali(Reuniones bilerak, String ikastetxea) {
+        ExecutorService executor = Executors.newSingleThreadExecutor();
+        executor.execute(() -> {
+            try {
+                service.handleEmailBilera(bilerak, ikastetxea);
+            } catch (Exception e) {
+                Log.e("SortuBilerakFragment", "Error enviando email", e);
+            }
+        });
     }
 }

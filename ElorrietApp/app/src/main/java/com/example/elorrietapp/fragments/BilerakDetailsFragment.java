@@ -248,49 +248,53 @@ public class BilerakDetailsFragment extends Fragment {
         });
     }
 
+
     public void bileraOnartu(Reuniones reunion) {
+        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM HH", Locale.getDefault());
+        String nuevaFecha = sdf.format(reunion.getFecha());
+
+        int reunionesActivasEnMismaFecha = 0;
+
         for (Reuniones r : reunionesList) {
-            if (r.getFecha().equals(reunion.getFecha())) {
-                reunion.setEstadoEus("gatazka");
-                reunion.setEstado("conflicto");
-                ExecutorService executor = Executors.newSingleThreadExecutor();
-                executor.execute(() -> {
-                    try {
-                        String mezua = service.handleUpdateReunion(reunion.getIdReunion(), reunion.getEstadoEus(), reunion.getEstado());
-                        getActivity().runOnUiThread(() -> {
-                            koloreaEzarri(frameEgora, reunion);
-                            textViewEgoera.setText("Egoera: gatazka");
-                            Toast.makeText(requireActivity(), mezua, Toast.LENGTH_SHORT).show();
-                            btnOnartu.setEnabled(true);
-                            btnEzeztatu.setEnabled(true);
-                        });
-                    } catch (Exception e) {
-                        Log.e("BilerakDetailsFragment", "Error actualizando reunión", e);
-                    }
-                });
-                break;
-            } else {
-                reunion.setEstadoEus("onartuta");
-                reunion.setEstado("aceptada");
-                ExecutorService executor = Executors.newSingleThreadExecutor();
-                executor.execute(() -> {
-                    try {
-                        String mezua = service.handleUpdateReunion(reunion.getIdReunion(), reunion.getEstadoEus(), reunion.getEstado());
-                        getActivity().runOnUiThread(() -> {
-                            koloreaEzarri(frameEgora, reunion);
-                            textViewEgoera.setText("Egoera: onartuta");
-                            Toast.makeText(requireActivity(), mezua, Toast.LENGTH_SHORT).show();
-                            btnOnartu.setEnabled(false);
-                            btnEzeztatu.setEnabled(true);
-                        });
-                    } catch (Exception e) {
-                        Log.e("BilerakDetailsFragment", "Error actualizando reunión", e);
-                    }
-                });
-                break;
+            if (sdf.format(r.getFecha()).equals(nuevaFecha)
+                    && !r.getIdReunion().equals(reunion.getIdReunion())
+                    && !r.getEstado().equals("denegada")) {
+                reunionesActivasEnMismaFecha++;
             }
         }
+
+        boolean hayConflicto = reunionesActivasEnMismaFecha > 0;
+
+        if (reunion.getEstado().equals("conflicto") && reunionesActivasEnMismaFecha == 0) {
+            hayConflicto = false;
+        }
+
+        final String estadoEus = hayConflicto ? "gatazka" : "onartuta";
+        final String estado = hayConflicto ? "conflicto" : "aceptada";
+
+        reunion.setEstadoEus(estadoEus);
+        reunion.setEstado(estado);
+
+        ExecutorService executor = Executors.newSingleThreadExecutor();
+        executor.execute(() -> {
+            try {
+                String mezua = service.handleUpdateReunion(reunion.getIdReunion(), estadoEus, estado);
+                getActivity().runOnUiThread(() -> {
+                    koloreaEzarri(frameEgora, reunion);
+                    textViewEgoera.setText("Egoera: " + estadoEus);
+                    Toast.makeText(requireActivity(), mezua, Toast.LENGTH_SHORT).show();
+
+                    btnOnartu.setEnabled(!estadoEus.equals("onartuta"));
+                    btnEzeztatu.setEnabled(true);
+                });
+            } catch (Exception e) {
+                Log.e("BilerakDetailsFragment", "Error actualizando reunión", e);
+            } finally {
+                executor.shutdown();
+            }
+        });
     }
+
 
     public void bileraEzeztatu(Reuniones reunion) {
         reunion.setEstadoEus("ezeztatuta");

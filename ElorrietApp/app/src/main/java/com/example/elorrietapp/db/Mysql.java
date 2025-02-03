@@ -11,9 +11,9 @@ import android.util.Log;
 
 
 public class Mysql {
-    private static final String URL = "jdbc:mysql://10.0.2.2:3307/elorbase";
-    private static final String USER = "root";
-    private static final String PASSWORD = "";
+    private static final String URL = "jdbc:mysql://10.5.104.41:3307/elorbase";
+    private static final String USER = "remote_user";
+    private static final String PASSWORD = "12345";
 
     public static void insertarReunion(Reuniones reunion) {
         new InsertReunionTask().execute(reunion);

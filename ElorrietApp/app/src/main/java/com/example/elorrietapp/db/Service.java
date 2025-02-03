@@ -25,14 +25,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Service {
-    private static final String ip = "192.168.0.22";
-    //private static final String ip = "10.5.104.41";
+    //private static final String ip = "192.168.0.22";
+    private static final String ip = "10.5.104.41";
     private static final int port = 5000;
 
     public static Users login(String user, String password) {
-        try (Socket socket = new Socket(ip, port);  // Crear la conexión al servidor
-             ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream()); // Para enviar datos al servidor
-             CustomObjectInputStream in = new CustomObjectInputStream(socket.getInputStream())) { // Para recibir datos del servidor
+        try (Socket socket = new Socket(ip, port);
+             ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream());
+             CustomObjectInputStream in = new CustomObjectInputStream(socket.getInputStream())) {
 
             Log.i("Service", "Conexión establecida");
 

@@ -1,5 +1,9 @@
 package com.example.elorrietapp;
 
+import android.content.Intent;
+import android.content.SharedPreferences;
+import android.content.res.Configuration;
+import android.content.res.Resources;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -8,10 +12,13 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.widget.Toolbar;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
 
 import com.example.elorrietapp.fragments.LoginFragment;
 import com.example.elorrietapp.fragments.ProfilaFragment;
 import com.example.elorrietapp.gen.Gen;
+
+import java.util.Locale;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -22,6 +29,7 @@ public class MainActivity extends AppCompatActivity {
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
 
         if (savedInstanceState == null) {
             getSupportFragmentManager().beginTransaction()
@@ -42,15 +50,69 @@ public class MainActivity extends AppCompatActivity {
         int id = menuItem.getItemId();
 
         if (id == R.id.profila) {
+            // Cambiar a la pantalla de perfil
             ProfilaFragment fragment = new ProfilaFragment();
             getSupportFragmentManager().beginTransaction()
                     .replace(R.id.fragmentContainerView, fragment)
                     .addToBackStack(null)
                     .commit();
             return true;
+        } else if (id == R.id.hizkuntza) {
+            toggleLanguage();
+            return true;
+        } else if (id == R.id.logout) {
+            Gen.getLoggedUser().setNombre("");
+            Gen.getLoggedUser().setId(0);
+            Gen.getLoggedUser().setTipos(0);
+            Gen.getLoggedUser().setPassword("");
+            Intent intent = new Intent(this, MainActivity.class);
+            startActivity(intent);
+            finish();
+            return true;
         }
-
 
         return super.onOptionsItemSelected(menuItem);
     }
+    private void toggleLanguage() {
+        // Obtener el idioma actual
+        String currentLanguage = Locale.getDefault().getLanguage();
+
+        // Determinar el nuevo idioma
+        String newLanguage;
+        if ("es".equals(currentLanguage)) {
+            newLanguage = ""; // Cambiar al idioma predeterminado (vacío)
+        } else {
+            newLanguage = "es"; // Cambiar al español
+        }
+
+        // Cambiar el idioma
+        changeLanguage(newLanguage);
+    }
+
+    private void changeLanguage(String languageCode) {
+        Resources resources = getResources();
+        Configuration configuration = resources.getConfiguration();
+
+        // Configurar el nuevo idioma
+        Locale locale = new Locale(languageCode); // "" para predeterminado, "es" para español
+        Locale.setDefault(locale);
+        configuration.setLocale(locale);
+
+        // Actualizar la configuración
+        resources.updateConfiguration(configuration, resources.getDisplayMetrics());
+
+        // Guardar el idioma seleccionado en SharedPreferences
+        saveLanguagePreference(languageCode);
+
+        // Recrear la actividad para aplicar los cambios
+        recreate();
+    }
+    private void saveLanguagePreference(String languageCode) {
+        SharedPreferences preferences = getSharedPreferences("Settings", MODE_PRIVATE);
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.putString("language", languageCode);
+        editor.apply();
+    }
+
+
 }

@@ -3,5 +3,11 @@
     <item android:id="@+id/profila"
         android:title="@string/profila"
          />
+    <item android:id="@+id/hizkuntza"
+        android:title="@string/Aldatu_Hizkuntza"
+         />
+    <item android:id="@+id/logout"
+        android:title="@string/logout"
+         />
 
 </menu>

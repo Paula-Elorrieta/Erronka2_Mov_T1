@@ -32,4 +32,17 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="1.0" />
+
+    <Button
+        android:id="@+id/buttonAtzera"
+        android:layout_width="293dp"
+        android:layout_height="58dp"
+        android:layout_gravity="center"
+        android:backgroundTint="@color/MoradoN"
+        android:text="@string/atzera"
+        app:layout_constraintBottom_toBottomOf="@+id/Zerrenda"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/searchView"
+        app:layout_constraintVertical_bias="0.923" />
 </androidx.constraintlayout.widget.ConstraintLayout>

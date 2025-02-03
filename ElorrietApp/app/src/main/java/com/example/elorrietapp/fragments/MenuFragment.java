@@ -59,16 +59,15 @@ public class MenuFragment extends Fragment {
                             .commit();
                 }
             });
-
-//            btnIrakasleOrdutegiak.setOnClickListener(new View.OnClickListener() {
-//                @Override
-//                public void onClick(View v) {
-//                    getActivity().getSupportFragmentManager().beginTransaction()
-//                            .replace(R.id.fragmentContainerView, new IrakasleOrdutegiakFragment())
-//                            .addToBackStack(null)
-//                            .commit();
-//                }
-//            });
+            btnIrakasleOrdutegiak.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    getActivity().getSupportFragmentManager().beginTransaction()
+                            .replace(R.id.fragmentContainerView, new IrakasleOrdutegiFragment())
+                            .addToBackStack(null)
+                            .commit();
+                }
+            });
         }
         if (userlog.getTipos() == 3) {
         btnOrdutegiPropioa.setOnClickListener(new View.OnClickListener() {

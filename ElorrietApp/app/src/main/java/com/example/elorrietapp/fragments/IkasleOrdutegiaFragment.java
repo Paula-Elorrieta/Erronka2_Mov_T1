@@ -59,6 +59,7 @@ public class IkasleOrdutegiaFragment extends Fragment {
             }
         }
 
+
         @Override
         protected void onPostExecute(List<Horarios> horariosResult) {
             super.onPostExecute(horariosResult);

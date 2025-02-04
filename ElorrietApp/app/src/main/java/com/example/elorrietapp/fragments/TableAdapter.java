@@ -27,11 +27,10 @@ public class TableAdapter {
     }
 
     public void actualizarTabla() {
-        tableLayout.removeAllViews(); // Limpiar la tabla antes de agregar nuevas filas
+        tableLayout.removeAllViews();
 
-        // Encabezado de la tabla
         TableRow headerRow = (TableRow) LayoutInflater.from(context).inflate(R.layout.item_tabla, tableLayout, false);
-        ((TextView) headerRow.findViewById(R.id.textViewHora)).setText("Hora");
+        ((TextView) headerRow.findViewById(R.id.textViewHora)).setText(R.string.hora);
         ((TextView) headerRow.findViewById(R.id.textViewDia1)).setText("L/A");
         ((TextView) headerRow.findViewById(R.id.textViewDia2)).setText("M/A");
         ((TextView) headerRow.findViewById(R.id.textViewDia3)).setText("X");
@@ -48,25 +47,22 @@ public class TableAdapter {
         diasMap.put("J/O", 4);
         diasMap.put("V/O", 5);
 
-        // Agregar filas de datos
         for (int i = 1; i <= 5; i++) {
             TableRow row = (TableRow) LayoutInflater.from(context).inflate(R.layout.item_tabla, tableLayout, false);
 
             ((TextView) row.findViewById(R.id.textViewHora)).setText(String.valueOf(i));
 
-            // Inicializar celdas vacías
             String[] rowData = new String[5];
             Arrays.fill(rowData, "");
 
             for (Horarios horario : horariosList) {
                 String dia = horario.getId().getDia().trim();
                 if (diasMap.containsKey(dia) && Integer.parseInt(horario.getId().getHora()) == i) {
-                    int columnIndex = diasMap.get(dia) - 1;  // Índice (0-4)
+                    int columnIndex = diasMap.get(dia) - 1;
                     rowData[columnIndex] = horario.getModulos().getNombre();
                 }
             }
 
-            // Rellenar la fila con los datos
             ((TextView) row.findViewById(R.id.textViewDia1)).setText(rowData[0]);
             ((TextView) row.findViewById(R.id.textViewDia2)).setText(rowData[1]);
             ((TextView) row.findViewById(R.id.textViewDia3)).setText(rowData[2]);

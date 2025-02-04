@@ -1,8 +1,5 @@
 package com.example.elorrietapp.db;
 
-import com.example.elorrietapp.modelo.Horarios;
-import com.example.elorrietapp.modelo.HorariosId;
-import com.example.elorrietapp.modelo.Modulos;
 import com.example.elorrietapp.modelo.Reuniones;
 import com.example.elorrietapp.modelo.Users;
 
@@ -22,11 +19,12 @@ public class Mysql {
     private static final String USER = "remote_user";
     private static final String PASSWORD = "12345";
 
-    public static void insertarReunion(Reuniones reunion) {
-        new InsertReunionTask().execute(reunion);
+    public static void bileraGehitu(Reuniones reunion) {
+        new InsertBilerakTask().execute(reunion);
     }
-    public static ArrayList<Users> obtenerProfesores() {
-        ArrayList<Users> profesores = new ArrayList<>();
+
+    public static ArrayList<Users> irakasleakKargatu() {
+        ArrayList<Users> irakasleak = new ArrayList<>();
         String sql = "SELECT * FROM users WHERE tipo_id = 3";
 
         try (Connection connection = DriverManager.getConnection(URL, USER, PASSWORD);
@@ -48,72 +46,47 @@ public class Mysql {
                 user.setTelefono2(resultSet.getObject("telefono2") != null ? resultSet.getInt("telefono2") : null);
                 user.setArgazkia(resultSet.getBytes("argazkia"));
 
-                profesores.add(user);
+                irakasleak.add(user);
             }
         } catch (SQLException e) {
-            Log.e("MYSQL", "Error al obtener los profesores: " + e.getMessage(), e);
+            Log.e("MYSQL", "Errorea: " + e.getMessage(), e);
         }
 
-        return profesores;
-    }
-    // Método para obtener los horarios de un profesor
-    public static ArrayList<Horarios> obtenerHorariosByProfesor(int profe_id) {
-        ArrayList<Horarios> horarios = new ArrayList<>();
-        String sql = "SELECT * FROM horarios WHERE profe_id = ?";
-
-        try (Connection connection = DriverManager.getConnection(URL, USER, PASSWORD);
-             PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
-
-            preparedStatement.setInt(1, profe_id);
-            try (ResultSet resultSet = preparedStatement.executeQuery()) {
-                while (resultSet.next()) {
-                    Horarios horario = new Horarios();
-                    HorariosId horarioId = new HorariosId();
-                    horarioId.setDia(resultSet.getString("dia"));
-                    horarioId.setHora(resultSet.getString("hora"));
-                    horarioId.setModuloId(resultSet.getInt("modulo_id"));
-                    horarioId.setProfeId(resultSet.getInt("profe_id"));
-                    horario.setId(horarioId);
-                    horarios.add(horario);
-                }
-            }
-        } catch (SQLException e) {
-            Log.e("MYSQL", "Error al obtener los horarios: " + e.getMessage(), e);
-        }
-        return horarios;
+        return irakasleak;
     }
 
-    private static class InsertReunionTask extends AsyncTask<Reuniones, Void, Void> {
+    private static class InsertBilerakTask extends AsyncTask<Reuniones, Void, Void> {
         @Override
-        protected Void doInBackground(Reuniones... reuniones) {
-            Reuniones reunion = reuniones[0];
+        protected Void doInBackground(Reuniones... bilerak) {
+            Reuniones reunion = bilerak[0];
             if (reunion == null || reunion.getUsersByProfesorId() == null || reunion.getUsersByAlumnoId() == null) {
-                Log.e("MYSQL", "Error: La reunión o los usuarios están vacíos.");
+                Log.e("MYSQL", "Error: bilera edo erabiltzaileak hutsik daude.");
                 return null;
             }
             reunion.setEstado("pendiente");
             reunion.setEstadoEus("onartzeke");
 
-            String sql = "INSERT INTO reuniones (profesor_id, alumno_id, estado, estado_eus, id_centro, titulo, asunto, aula, fecha) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+            String sql = "INSERT INTO reuniones (profesor_id, alumno_id, estado_en, estado, estado_eus, id_centro, titulo, asunto, aula, fecha) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
             try (Connection connection = DriverManager.getConnection(URL, USER, PASSWORD);
                  PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
 
                 preparedStatement.setInt(1, reunion.getUsersByProfesorId().getId());
                 preparedStatement.setInt(2, reunion.getUsersByAlumnoId().getId());
-                preparedStatement.setString(3, reunion.getEstado());
-                preparedStatement.setString(4, reunion.getEstadoEus());
-                preparedStatement.setString(5, reunion.getIdCentro());
-                preparedStatement.setString(6, reunion.getTitulo());
-                preparedStatement.setString(7, reunion.getAsunto());
-                preparedStatement.setString(8, reunion.getAula());
-                preparedStatement.setTimestamp(9, reunion.getFecha());
+                preparedStatement.setString(3, "pending");
+                preparedStatement.setString(4, reunion.getEstado());
+                preparedStatement.setString(5, reunion.getEstadoEus());
+                preparedStatement.setString(6, reunion.getIdCentro());
+                preparedStatement.setString(7, reunion.getTitulo());
+                preparedStatement.setString(8, reunion.getAsunto());
+                preparedStatement.setString(9, reunion.getAula());
+                preparedStatement.setTimestamp(10, reunion.getFecha());
 
                 int filasAfectadas = preparedStatement.executeUpdate();
-                Log.d("MYSQL", "Reunión insertada correctamente. Filas afectadas: " + filasAfectadas);
+                Log.d("MYSQL", "Ondo egin da insert: " + filasAfectadas);
 
             } catch (SQLException e) {
-                Log.e("MYSQL", "Error al insertar la reunión: " + e.getMessage(), e);
+                Log.e("MYSQL", "Errorea bilera gehitzean: " + e.getMessage(), e);
             }
             return null;
         }

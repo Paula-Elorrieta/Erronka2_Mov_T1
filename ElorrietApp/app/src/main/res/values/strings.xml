@@ -23,7 +23,6 @@
     <string name="profila">Profila</string>
     <string name="Bilatu">Izena...</string>
     <string name="BilatuIrak">Izena...</string>
-
     <string name="onartuta">Onartuta</string>
     <string name="ezeztatuta">Ezeztatuta</string>
     <string name="gatazka">Gatazka</string>
@@ -32,5 +31,8 @@
     <string name="Gorde">Gorde</string>
     <string name="Aldatu_Hizkuntza">Aldatu Hizkuntza</string>
     <string name="logout">Itxi saio\n</string>
-
+    <string name="ordutegia">Ordutegiak</string>
+    <string name="ordutegiIrakasleak">Irakasleko ordutegiak</string>
+    <string name="ordutegiIkasleak">Ikasleko ordutegiak</string>
+    <string name="hora">Orduak</string>
 </resources>

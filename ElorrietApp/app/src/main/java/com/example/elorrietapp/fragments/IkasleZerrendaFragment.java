@@ -5,6 +5,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.SearchView;
 
 import androidx.fragment.app.Fragment;
@@ -38,6 +39,11 @@ public class IkasleZerrendaFragment extends Fragment {
 
         zerrendaRecyclerView = view.findViewById(R.id.Zerrenda);
         zerrendaRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        Button buttonAtzera = view.findViewById(R.id.buttonAtzera);
+
+        buttonAtzera.setOnClickListener(v -> {
+            requireActivity().getSupportFragmentManager().popBackStack();
+        });
 
         searchView = view.findViewById(R.id.searchView);
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {

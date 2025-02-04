@@ -37,7 +37,6 @@ import org.osmdroid.util.GeoPoint;
 import org.osmdroid.views.MapView;
 import org.osmdroid.views.overlay.Marker;
 
-import java.io.ByteArrayInputStream;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Locale;
@@ -261,6 +260,7 @@ public class BilerakDetailsFragment extends Fragment {
 
         final String estadoEus = hayConflicto ? "gatazka" : "onartuta";
         final String estado = hayConflicto ? "conflicto" : "aceptada";
+        final String estadoEn = hayConflicto ? "conflic" : "accepted";
 
         reunion.setEstadoEus(estadoEus);
         reunion.setEstado(estado);
@@ -268,7 +268,7 @@ public class BilerakDetailsFragment extends Fragment {
         ExecutorService executor = Executors.newSingleThreadExecutor();
         executor.execute(() -> {
             try {
-                String mezua = service.handleUpdateReunion(reunion.getIdReunion(), estadoEus, estado);
+                String mezua = service.handleUpdateReunion(reunion.getIdReunion(), estadoEus, estado, estadoEn);
                 getActivity().runOnUiThread(() -> {
                     koloreaEzarri(frameEgora, reunion);
                     textViewEgoera.setText("Egoera: " + estadoEus);
@@ -285,14 +285,13 @@ public class BilerakDetailsFragment extends Fragment {
         });
     }
 
-
     public void bileraEzeztatu(Reuniones reunion) {
         reunion.setEstadoEus("ezeztatuta");
         reunion.setEstado("denegada");
         ExecutorService executor = Executors.newSingleThreadExecutor();
         executor.execute(() -> {
             try {
-                String mezua = service.handleUpdateReunion(reunion.getIdReunion(), reunion.getEstadoEus(), reunion.getEstado());
+                String mezua = service.handleUpdateReunion(reunion.getIdReunion(), reunion.getEstadoEus(), reunion.getEstado(), "cancelled");
                 getActivity().runOnUiThread(() -> {
                     koloreaEzarri(frameEgora, reunion);
                     textViewEgoera.setText("Egoera: ezeztatuta");

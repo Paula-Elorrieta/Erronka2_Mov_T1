@@ -9,9 +9,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import androidx.annotation.NonNull;
 import androidx.core.content.FileProvider;
 import androidx.fragment.app.Fragment;
 
@@ -82,7 +80,7 @@ public class ProfilaFragment extends Fragment {
         ExecutorService executor = Executors.newSingleThreadExecutor();
         executor.execute(() -> {
             try {
-                List<Matriculaciones> matriculaciones = service.getMatriculacionesByUser(user.getId());
+                List<Matriculaciones> matriculaciones = service.getMatrikulazioakByErabiltzaileak(user.getId());
                 requireActivity().runOnUiThread(() -> {
                     if (!matriculaciones.isEmpty()) {
                         textVCurso.setText(matriculaciones.get(0).getCiclos().getNombre()

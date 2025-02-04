@@ -1,8 +1,6 @@
 package com.example.elorrietapp.db;
 
-import android.util.Base64;
 import android.util.Log;
-import android.widget.Toast;
 
 import com.example.elorrietapp.gen.Gen;
 import com.example.elorrietapp.modelo.Ciclos;
@@ -25,16 +23,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Service {
-//    private static final String ip = "192.168.0.22";
     private static final String ip = "10.5.104.41";
     private static final int port = 5000;
 
     public static Users login(String user, String password) {
-        try (Socket socket = new Socket(ip, port);  // Crear la conexión al servidor
-             ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream()); // Para enviar datos al servidor
-             CustomObjectInputStream in = new CustomObjectInputStream(socket.getInputStream())) { // Para recibir datos del servidor
-
-            Log.i("Service", "Conexión establecida");
+        try (Socket socket = new Socket(ip, port);
+             ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream());
+             CustomObjectInputStream in = new CustomObjectInputStream(socket.getInputStream())) {
+            Log.i("Service", "Konexioa eginda");
 
             out.writeObject("LOGIN");
             out.writeObject(user);
@@ -48,67 +44,56 @@ public class Service {
                     Object userResponse = in.readObject();
                     if (userResponse instanceof Users) {
                         Users userLog = (Users) userResponse;
-                        Log.i("Client", "Usuario recibido: " + userLog.getUsername());
-                        Log.i("Client", "Tipo de usuario recibido: " + userLog.getTipos());
                         Object tipo = in.readObject();
-                        Log.i("Client", "Tipo de usuario como obj: " + tipo);
                         if (tipo instanceof Integer) {
-                            Log.i("Client", "Tipo de usuario: " + tipo);
                             userLog.setTipos((int) tipo);
-                            Log.i("Client", "Tipo de usuario: " + userLog.getTipos());
                             return userLog;
                         } else {
-                            Log.e("Client", "Error: Respuesta inesperada del servidor - No se recibió un tipo de usuario");
+                            Log.e("LOGIN", "Errorea: ez da erabiltzailearen mota jaso");
                         }
                     } else {
-                        Log.e("Client", "Error: Respuesta inesperada del servidor - No se recibió un usuario");
+                        Log.e("LOGIN", "Erroea: ez da erabiltzailea jaso");
                     }
                 } else {
-                    Log.e("Client", "Error en la respuesta del servidor: " + responseMessage);
+                    Log.e("LOGIN", "Zerbitzataria konexioa ez da ondo egin: " + responseMessage);
                 }
             } else {
-                Log.e("Client", "Error: La respuesta del servidor no es de tipo String");
+                Log.e("LOGIN", "Errorea: ez da string bat jaso");
             }
 
         } catch (IOException e) {
-            Log.e("Service", "Error de conexión o de E/S", e);
+            Log.e("LOGIN", "Errorea konexioarekin", e);
         } catch (ClassNotFoundException e) {
-            Log.e("Service", "Error de deserialización", e);
+            Log.e("LOGIN", "Desirelixasio errorea", e);
         }
         return null;
     }
 
     public static boolean resetPassword(String user) {
-        Log.e("Service", "Cambiando contraseña para el usuario: " + user);
         try (Socket socket = new Socket(ip, port);
              ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream());
              CustomObjectInputStream in = new CustomObjectInputStream(socket.getInputStream())) {
 
-            Log.i("Service", "Conexión establecida");
-
-            // Enviar la solicitud de login al servidor
             out.writeObject("ALDATUPASS");
             out.writeObject(user);
             out.flush();
 
-            // Leer la respuesta del servidor
             Object response = in.readObject();
             if (response instanceof String) {
                 String responseMessage = (String) response;
                 if (responseMessage.equals("OK")) {
-                    Log.e("Client", "Contraseña cambiada correctamente");
                     return true;
                 } else {
-                    Log.e("Client", "Error en la respuesta del servidor: " + responseMessage);
+                    Log.e("Client", "Errorea zerbitzariarekin: " + responseMessage);
                 }
             } else {
-                Log.e("Client", "Error: La respuesta del servidor no es de tipo String");
+                Log.e("Client", "Errorea: ez da string bat jaso");
             }
 
         } catch (IOException e) {
-            Log.e("Service", "Error de conexión o de E/S", e);
+            Log.e("ResetPassword", "Errorea konexioarekin", e);
         } catch (ClassNotFoundException e) {
-            Log.e("Service", "Error de deserialización", e);
+            Log.e("Service", "Desirelixasio errorea", e);
         }
         return false;
     }
@@ -118,8 +103,6 @@ public class Service {
              ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream());
              CustomObjectInputStream in = new CustomObjectInputStream(socket.getInputStream())) {
 
-            Log.i("Service", "Conexión establecida");
-
             out.writeObject("ORDUTEGIA");
             out.writeObject(id);
             out.flush();
@@ -128,107 +111,84 @@ public class Service {
             if (response instanceof String) {
                 String responseMessage = (String) response;
                 if (responseMessage.equals("OK")) {
-                    // Leer la lista de horarios
-                    Object hora = in.readObject();
-                    if (hora instanceof List<?>) {
-                        List<?> rawList = (List<?>) hora;
+                    Object ordua = in.readObject();
+                    if (ordua instanceof List<?>) {
+                        List<?> listaLortuta = (List<?>) ordua;
 
-                        // Asegúrate de que los elementos son de tipo Horarios
-                        for (Object obj : rawList) {
+                        for (Object obj : listaLortuta) {
                             if (!(obj instanceof Horarios)) {
-                                Log.e("Client", "Error: Uno de los elementos no es del tipo Horarios");
+                                Log.e("Client", "Errorea: Elementu bat ez da Horarios klasekoa");
                                 return null;
                             }
                         }
 
-                        @SuppressWarnings("unchecked")
-                        List<Horarios> horarios = (List<Horarios>) rawList;
-                        Log.i("Client", "Horarios recibidos: " + horarios.size());
+                        List<Horarios> ordutegiak = (List<Horarios>) listaLortuta;
+                        List<Modulos> moduluak = (List<Modulos>) in.readObject();
+                        List<Users> erabiltzaileak = (List<Users>) in.readObject();
+                        List<HorariosId> ordutegiID = (List<HorariosId>) in.readObject();
 
-                        List<Modulos> modulos = (List<Modulos>) in.readObject();
-                        List<Users> users = (List<Users>) in.readObject();
-                        List<HorariosId> horariosIda = (List<HorariosId>) in.readObject();
+                        for (int i = 0; i < ordutegiak.size(); i++) {
+                            Horarios ordutegia = ordutegiak.get(i);
 
-                        for (int i = 0; i < horarios.size(); i++) {
-                            Horarios horario = horarios.get(i);
-
-                            horario.setModulos(modulos.get(i));
-                            horario.setUsers(users.get(i));
-                            horario.setId(horariosIda.get(i));
-
-                            Log.i("Horarios", "ID: " + horario.getId().getClass() +
-                                    ", Usuario: " + (horario.getUsers() != null ? horario.getUsers().getNombre() : "N/A") +
-                                    ", Módulo: " + (horario.getModulos().getNombre() != null ? horario.getModulos().getNombre() : "N/A") +
-                                    ", HorariosId: " + (horario.getId().getDia() != null ? horario.getId().getHora() : "N/A"));
+                            ordutegia.setModulos(moduluak.get(i));
+                            ordutegia.setUsers(erabiltzaileak.get(i));
+                            ordutegia.setId(ordutegiID.get(i));
                         }
 
-                        return horarios;
+                        return ordutegiak;
                     } else {
-                        Log.e("Client", "Error: No se recibió una lista válida de horarios");
+                        Log.e("getHorariosProfeByid", "Errorea: Elementu bat ez da lista bat");
                     }
                 } else {
-                    Log.e("Client", "Error: Respuesta del servidor no fue OK: " + responseMessage);
+                    Log.e("getHorariosProfeByid", "Erroea: Zerbitzari erantzuna ez zen ondo " + responseMessage);
                 }
             } else {
-                Log.e("Client", "Error: Respuesta inesperada del servidor");
+                Log.e("getHorariosProfeByid", "Error: ez da string bat jaso");
             }
 
         } catch (IOException | ClassNotFoundException e) {
-            Log.e("Service", "Error de conexión o de deserialización", e);
+            Log.e("Service", "Desirelixasio errorea", e);
         }
         return null;
     }
 
-    public List<Matriculaciones> getMatriculacionesByUser(int id) {
+    public List<Matriculaciones> getMatrikulazioakByErabiltzaileak(int id) {
         try (Socket socket = new Socket(ip, port);
              ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream());
              CustomObjectInputStream in = new CustomObjectInputStream(socket.getInputStream())) {
-
-            Log.i("Service", "Conexión establecida");
 
             out.writeObject("MATRIKULAK");
             out.writeObject(id);
             out.flush();
 
-            Object response = in.readObject();
-            Log.e("noif", response + "");
+            Object erantzuna = in.readObject();
+            if (erantzuna instanceof String) {
+                String erantzunaMezua = (String) erantzuna;
+                if (erantzunaMezua.equals("OK")) {
 
-            if (response instanceof String) {
-                String responseMessage = (String) response;
-                if (responseMessage.equals("OK")) {
+                    Object matrikulazioak = in.readObject();
+                    if (matrikulazioak instanceof List<?>) {
+                        List<?> listaLortuta = (List<?>) matrikulazioak;
 
-                    Object matriculaciones = in.readObject();
-                    if (matriculaciones instanceof List<?>) {
-                        List<?> rawList = (List<?>) matriculaciones;
-
-                        Log.e("Client", "Matriculaciones recibidas: " + rawList.size());
-
-                        for (Object obj : rawList) {
+                        for (Object obj : listaLortuta) {
                             if (!(obj instanceof Matriculaciones)) {
-                                Log.e("Client", "Error: Uno de los elementos no es del tipo Matriculaciones");
+                                Log.e("Client", "Errorea: Elementu bat ez da Matriculaciones klasekoa");
                                 return null;
                             }
 
-                            List<Matriculaciones> matriculacionesList = (List<Matriculaciones>) rawList;
+                            List<Matriculaciones> matrikulazioaZerrenda = (List<Matriculaciones>) listaLortuta;
+                            List<Ciclos> zikloak = (List<Ciclos>) in.readObject();
+                            List<Users> erabiltzaileak = (List<Users>) in.readObject();
+                            List<MatriculacionesId> matrikulazioakID = (List<MatriculacionesId>) in.readObject();
 
-                            List<Ciclos> ciclos = (List<Ciclos>) in.readObject();
-                            List<Users> users = (List<Users>) in.readObject();
-                            List<MatriculacionesId> matriculacionesId = (List<MatriculacionesId>) in.readObject();
-
-                            for (int i = 0; i < matriculacionesList.size(); i++) {
-                                Matriculaciones matriculacion = matriculacionesList.get(i);
-
-                                matriculacion.setCiclos(ciclos.get(i));
-                                matriculacion.setUsers(users.get(i));
-                                matriculacion.setId(matriculacionesId.get(i));
-
-                                Log.i("Matriculaciones", "ID: " + matriculacion.getId().getClass() +
-                                        ", Usuario: " + (matriculacion.getUsers() != null ? matriculacion.getUsers().getNombre() : "N/A") +
-                                        ", Ciclo: " + (matriculacion.getCiclos().getNombre() != null ? matriculacion.getCiclos().getNombre() : "N/A") +
-                                        ", MatriculacionesId: " + (matriculacion.getId() != null ? matriculacion.getId().getCurso() : "N/A"));
+                            for (int i = 0; i < matrikulazioaZerrenda.size(); i++) {
+                                Matriculaciones matriculacion = matrikulazioaZerrenda.get(i);
+                                matriculacion.setCiclos(zikloak.get(i));
+                                matriculacion.setUsers(erabiltzaileak.get(i));
+                                matriculacion.setId(matrikulazioakID.get(i));
                             }
 
-                            return matriculacionesList;
+                            return matrikulazioaZerrenda;
                         }
                     }
                 }
@@ -254,8 +214,6 @@ public class Service {
                     Object users = in.readObject();
                     if (users instanceof List<?>) {
                         ArrayList<Users> userList = (ArrayList<Users>) users;
-                        Log.i("Client", "Usuarios recibidos: " + userList);
-                        //Recibir tipos de usuario
                         Object tipos = in.readObject();
                         if (tipos instanceof List<?>) {
                             ArrayList<Tipos> tiposList = (ArrayList<Tipos>) tipos;
@@ -266,21 +224,21 @@ public class Service {
 
                         return userList;
                     } else {
-                        Log.e("Client", "Error: Respuesta inesperada del servidor - No se recibió una lista de usuarios válida");
+                        Log.e("handleGetUsers", "Errorea: Elementu bat ez da lista bat");
                     }
                 } else {
-                    Log.e("Client", "Error en la respuesta del servidor: " + responseMessage);
+                    Log.e("handleGetUsers", "Errorea zerbitzari konexioan: " + responseMessage);
                 }
             } else {
-                Log.e("Client", "Error: La respuesta del servidor no es un String como se esperaba");
+                Log.e("handleGetUsers", "Error: La respuesta del servidor no es un String como se esperaba");
             }
 
         } catch (IOException e) {
-            Log.e("Service", "Error de conexión o de E/S", e);
+            Log.e("Service", "Errorea konexioan", e);
         } catch (ClassNotFoundException e) {
-            Log.e("Service", "Error de deserialización", e);
+            Log.e("Service", "Desirelixasio errorea", e);
         } catch (Exception e) {
-            Log.e("Service", "Error inesperado", e);
+            Log.e("Service", "Errorea", e);
         }
         return null;
     }
@@ -302,12 +260,9 @@ public class Service {
                     Object reunionesObj = in.readObject();
                     if (reunionesObj instanceof List<?>) {
                         ArrayList<Reuniones> reuniones = (ArrayList<Reuniones>) reunionesObj;
-                        Log.i("Client", "Reuniones recibidas: " + reuniones);
-
                         Object usersObj = in.readObject();
                         if (usersObj instanceof List<?>) {
                             List<Users> ikasleak = (List<Users>) usersObj;
-                            Log.i("Client", "Usuarios recibidos: " + ikasleak);
 
                             for (int i = 0; i < reuniones.size(); i++) {
                                 reuniones.get(i).setUsersByAlumnoId(ikasleak.get(i));
@@ -315,24 +270,24 @@ public class Service {
 
                             return reuniones;
                         } else {
-                            Log.e("Client", "Error: No se recibió una lista de usuarios válida.");
+                            Log.e("handleGetBilera", "Errorea: Ez da ikasleak jaso");
                         }
                         return reuniones;
                     } else {
-                        Log.e("Client", "Error: No se recibió una lista de reuniones válida");
+                        Log.e("handleGetBilera", "Errorea: Ez da bilera jaso");
                     }
                 } else {
-                    Log.e("Client", "Error en la respuesta del servidor: " + responseMessage);
+                    Log.e("handleGetBilera", "Errorea konexioan: " + responseMessage);
                 }
             } else {
-                Log.e("Client", "Error: La respuesta del servidor no es un String como se esperaba");
+                Log.e("handleGetBilera", "Errorea: Ez da string bat jaso");
             }
         } catch (IOException e) {
-            Log.e("Service", "Error de conexión o de E/S", e);
+            Log.e("Service", "Errorea konexioan", e);
         } catch (ClassNotFoundException e) {
-            Log.e("Service", "Error de deserialización", e);
+            Log.e("Service", "Desirelixasio errorea", e);
         } catch (Exception e) {
-            Log.e("Service", "Error inesperado", e);
+            Log.e("Service", "Errorea", e);
         }
         return null;
     }
@@ -423,7 +378,7 @@ public class Service {
         return null;
     }
 
-    public String handleUpdateReunion(int id, String estadoEus, String estado) {
+    public String handleUpdateReunion(int id, String estadoEus, String estado, String estadoEn) {
         try (Socket socket = new Socket(ip, port);
              ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream());
              ObjectInputStream in = new ObjectInputStream(socket.getInputStream())) {
@@ -432,6 +387,7 @@ public class Service {
             out.writeObject(id);
             out.writeObject(estadoEus);
             out.writeObject(estado);
+            out.writeObject(estadoEn);
             out.flush();
 
             Object response = in.readObject();
@@ -590,66 +546,6 @@ public class Service {
             Log.e("Service", "Error inesperado", e);
         }
         return null;
-    }
-
-    public void handleBileraSortu(Reuniones reunion) {
-        try (Socket socket = new Socket(ip, port);
-             ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream());
-             ObjectInputStream in = new ObjectInputStream(socket.getInputStream())) {
-
-            // Verificar si el socket está conectado
-            if (socket.isConnected() && !socket.isClosed()) {
-                // Enviar el mensaje inicial
-                out.writeObject("BILERA_SORTU_ANDROID");
-
-
-                Integer id = 99;
-                Users usersByProfesorId = reunion.getUsersByProfesorId();
-                Users usersByAlumnoId = reunion.getUsersByAlumnoId();
-                String estado = reunion.getEstado();
-                String estadoEus = reunion.getEstadoEus();
-                String idCentro = reunion.getIdCentro();
-                String titulo = reunion.getTitulo();
-                String asunto = reunion.getAsunto();
-                String aula = reunion.getAula();
-                Timestamp fecha = reunion.getFecha();
-
-                out.writeObject(id);
-                out.writeObject(usersByProfesorId);
-                out.writeObject(usersByAlumnoId);
-                out.writeObject(estado);
-                out.writeObject(estadoEus);
-                out.writeObject(idCentro);
-                out.writeObject(titulo);
-                out.writeObject(asunto);
-                out.writeObject(aula);
-                out.writeObject(fecha);
-
-                out.flush();
-
-                // Leer la respuesta del servidor
-                Object response = in.readObject();
-                if (response instanceof String) {
-                    String responseMessage = (String) response;
-                    if ("OK".equals(responseMessage)) {
-                        Log.i("Client", "La reunión se ha creado correctamente.");
-                    } else {
-                        Log.e("Client", "Error: " + responseMessage);
-                    }
-                } else {
-                    Log.e("Client", "Error: La respuesta del servidor no es un String como se esperaba.");
-                }
-            } else {
-                Log.e("Client", "El socket no está conectado.");
-            }
-
-        } catch (IOException e) {
-            Log.e("Client", "Error de conexión o de E/S: " + e.getMessage());
-        } catch (ClassNotFoundException e) {
-            Log.e("Client", "Error de deserialización: " + e.getMessage());
-        } catch (Exception e) {
-            Log.e("Client", "Error inesperado: " + e.getMessage());
-        }
     }
 
     public void handleEmailBilera(Reuniones bilera, String ikastetxea) {

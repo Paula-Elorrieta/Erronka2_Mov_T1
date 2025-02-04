@@ -5,13 +5,13 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TableLayout;
 import android.widget.Toast;
 
 import androidx.fragment.app.Fragment;
 
 import com.example.elorrietapp.R;
-import com.example.elorrietapp.fragments.TableAdapter;
 import com.example.elorrietapp.db.Service;
 import com.example.elorrietapp.gen.Gen;
 import com.example.elorrietapp.modelo.Horarios;
@@ -30,10 +30,15 @@ public class HorariosFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_ordutegia, container, false);
-
+        requireActivity().setTitle(R.string.ordutegia);
         tableLayoutHorarios = view.findViewById(R.id.tableLayoutHorarios);
         Users loggedUser = Gen.getLoggedUser();
+        Button buttonAtzera = view.findViewById(R.id.buttonAtzera);
         obtenerHorariosAsync(loggedUser.getId());
+
+        buttonAtzera.setOnClickListener(v -> {
+            requireActivity().getSupportFragmentManager().popBackStack();
+        });
 
         return view;
     }
@@ -62,7 +67,7 @@ public class HorariosFragment extends Fragment {
                 tableAdapter = new TableAdapter(getContext(), tableLayoutHorarios, horariosResult);
                 tableAdapter.actualizarTabla();
             } else {
-                Toast.makeText(getContext(), "Error al obtener los horarios", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getContext(), "Errorea ordutegiak lortzen", Toast.LENGTH_SHORT).show();
             }
         }
     }

@@ -8,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -39,22 +40,23 @@ public class LoginFragment extends Fragment {
         textPasahitza = view.findViewById(R.id.textPasahitza);
         ImageView logo = view.findViewById(R.id.logo);
         aldatuPasahitza = view.findViewById(R.id.LinkPasahitzaAhaztuta);
+        Button btnLogin = view.findViewById(R.id.btnLogin);
 
-        aldatuPasahitza.setEnabled(false);
-
-        // Animazioa kargatu
         Glide.with(this)
                 .asGif()
                 .load(R.drawable.eit)
                 .into(logo);
 
-        // Login balidazioa
         textPasahitza.setOnEditorActionListener((v, actionId, event) -> {
             if (event != null && event.getAction() == KeyEvent.ACTION_DOWN) {
-                validarLogin(textErabiltzailea, textPasahitza);
+                loginBalidazioa(textErabiltzailea, textPasahitza);
                 return true;
             }
             return false;
+        });
+
+        btnLogin.setOnClickListener(v -> {
+            loginBalidazioa(textErabiltzailea, textPasahitza);
         });
 
         aldatuPasahitza.setOnClickListener(v -> {
@@ -69,9 +71,19 @@ public class LoginFragment extends Fragment {
         new ResetPasswordTask().execute(erabiltzailea);
     }
 
-    // Función de validación de login
-    private void validarLogin(TextView textErabiltzailea, TextView textPasahitza) {
-        Toast.makeText(getContext(), "Komprobatzen...", Toast.LENGTH_SHORT).show();
+    private void loginBalidazioa(TextView textErabiltzailea, TextView textPasahitza) {
+
+        if (textErabiltzailea.getText().toString().isEmpty()) {
+            Toast.makeText(getContext(), "Erabiltzaile ezin da hutsik egon", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        if (textPasahitza.getText().toString().isEmpty()) {
+            Toast.makeText(getContext(), "Pasahitza ezin da hutsik egon", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        Toast.makeText(getContext(), "Egiaztatzen...", Toast.LENGTH_SHORT).show();
         new LoginTask().execute(textErabiltzailea.getText().toString(), textPasahitza.getText().toString());
     }
 
@@ -81,8 +93,6 @@ public class LoginFragment extends Fragment {
         protected Users doInBackground(String... params) {
             String user = params[0];
             String password = params[1];
-
-            // Llamar al servicio para intentar hacer login
             Users logUser = Service.login(user, password);
             return logUser;
         }
@@ -91,44 +101,34 @@ public class LoginFragment extends Fragment {
         protected void onPostExecute(Users result) {
             if (result != null) {
                 loggedUser = result;
-                Log.i("LoginTask", "Usuario recibido: " + loggedUser.getUsername() + " ID: " + loggedUser.getId());
-                // Si el usuario se ha autenticado correctamente, mostrar mensaje y navegar
-                Toast.makeText(getContext(), "Login ondo", Toast.LENGTH_SHORT).show();
 
-                // Reemplazar el fragmento con el nuevo fragmento si es de tipo 3 o 4
                 if (loggedUser.getTipos() == 1 || loggedUser.getTipos() == 2) {
-                    Toast.makeText(getContext(), "Bakarrik Ikasleak eta Irakasleak sar daitezke", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getContext(), "Bakarrik ikasleak eta irakasleak sar daitezke", Toast.LENGTH_SHORT).show();
 
                 } else {
+                    Toast.makeText(getContext(), "Ongi etorri", Toast.LENGTH_SHORT).show();
                     Bundle serializedUser = new Bundle();
                     serializedUser.putSerializable("loggedUser", loggedUser);
-
                     Gen gen = new Gen();
                     gen.setLoggedUser(loggedUser);
-                    Log.i("LoginTask", "Usuario guardado: " + gen.getLoggedUser().getUsername() + " ID: " + gen.getLoggedUser().getId());
 
                     MenuFragment menuFragment = new MenuFragment();
                     menuFragment.setArguments(serializedUser);
-
                     requireActivity().getSupportFragmentManager().beginTransaction()
                             .replace(R.id.fragmentContainerView, menuFragment)
                             .addToBackStack(null)
                             .commit();
                 }
             } else {
-                // Si no se recibe un usuario válido, mostrar error
                 Toast.makeText(getContext(), "Erabiltzaile edo pasahitza desegokia", Toast.LENGTH_SHORT).show();
             }
         }
     }
 
     private class ResetPasswordTask extends AsyncTask<String, Void, Boolean> {
-
         @Override
         protected Boolean doInBackground(String... params) {
             String user = params[0];
-
-            // Llamar al servicio para intentar hacer login
             return Service.resetPassword(user);
         }
 

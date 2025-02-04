@@ -1,6 +1,5 @@
 package com.example.elorrietapp.fragments;
 
-import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.os.AsyncTask;
 import android.view.LayoutInflater;
@@ -21,7 +20,6 @@ import com.example.elorrietapp.modelo.Horarios;
 import com.example.elorrietapp.modelo.Users;
 import com.example.elorrietapp.db.Mysql;
 
-import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -36,32 +34,25 @@ public class IrakasleOrdutegiFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_irakasle_ordutegi, container, false);
+        requireActivity().setTitle(R.string.ordutegiIrakasleak);
 
         spinnerProfesores = view.findViewById(R.id.spinnerProfesores);
         tableLayoutHorarios = view.findViewById(R.id.tableLayoutHorarios);
 
-        // Cargar profesores al iniciar el fragmento
         new ObtenerProfesoresTask().execute();
         btnAtzera = view.findViewById(R.id.buttonAtzera);
-        btnAtzera.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                getActivity().getSupportFragmentManager().beginTransaction()
-                        .replace(R.id.fragmentContainerView, new MenuFragment())
-                        .addToBackStack(null)
-                        .commit();
-            }
+        btnAtzera.setOnClickListener(v -> {
+            requireActivity().getSupportFragmentManager().popBackStack();
         });
 
         return view;
     }
 
-    // Tarea asíncrona para obtener los profesores en segundo plano
     private class ObtenerProfesoresTask extends AsyncTask<Void, Void, ArrayList<Users>> {
 
         @Override
         protected ArrayList<Users> doInBackground(Void... voids) {
-            return Mysql.obtenerProfesores(); // Llamamos al método que ahora devuelve la lista de profesores
+            return Mysql.irakasleakKargatu();
         }
 
         @Override
@@ -69,7 +60,6 @@ public class IrakasleOrdutegiFragment extends Fragment {
             if (profesores != null && !profesores.isEmpty()) {
                 profesoresList = profesores;
 
-                // Llenar el Spinner con los nombres de los profesores
                 ArrayAdapter<String> adapter = new ArrayAdapter<>(
                         getContext(),
                         android.R.layout.simple_spinner_dropdown_item,
@@ -78,7 +68,6 @@ public class IrakasleOrdutegiFragment extends Fragment {
 
                 spinnerProfesores.setAdapter(adapter);
 
-                // Manejar la selección del profesor
                 spinnerProfesores.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                     @Override
                     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
@@ -88,17 +77,16 @@ public class IrakasleOrdutegiFragment extends Fragment {
 
                     @Override
                     public void onNothingSelected(AdapterView<?> parent) {
-                        // No hacer nada si no hay selección
+                        // Ez egin ezer
                     }
                 });
 
             } else {
-                Toast.makeText(getContext(), "No se encontraron profesores", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getContext(), "Ez dira kargatu irakasleak", Toast.LENGTH_SHORT).show();
             }
         }
     }
 
-    // Tarea asíncrona para obtener los horarios de un profesor
     private void obtenerHorariosProfesorAsync(int profesorId) {
         new ObtenerHorariosTask().execute(profesorId);
     }
@@ -107,23 +95,20 @@ public class IrakasleOrdutegiFragment extends Fragment {
 
         @Override
         protected List<Horarios> doInBackground(Integer... params) {
-            // Usar el método getHorariosProfeByid para obtener los horarios del profesor
             return Service.getHorariosProfeByid(params[0]);
         }
 
         @Override
         protected void onPostExecute(List<Horarios> horariosResult) {
             if (horariosResult != null && !horariosResult.isEmpty()) {
-                // Llenar la tabla con los horarios obtenidos
                 TableAdapter tableAdapter = new TableAdapter(getContext(), tableLayoutHorarios, horariosResult);
                 tableAdapter.actualizarTabla();
             } else {
-                Toast.makeText(getContext(), "Ese profe no tiene horario", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getContext(), "Irakasle hori ez dauka ordutegirik", Toast.LENGTH_SHORT).show();
             }
         }
     }
 
-    // Convertir la lista de profesores a un arreglo de nombres
     private String[] getProfesoresNombres(List<Users> profesores) {
         String[] nombres = new String[profesores.size()];
         for (int i = 0; i < profesores.size(); i++) {
@@ -131,7 +116,6 @@ public class IrakasleOrdutegiFragment extends Fragment {
         }
         return nombres;
     }
-
 
 
 }

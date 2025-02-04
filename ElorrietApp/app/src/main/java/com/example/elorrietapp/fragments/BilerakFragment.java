@@ -1,8 +1,6 @@
 package com.example.elorrietapp.fragments;
 
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Looper;
 
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -21,7 +19,6 @@ import com.example.elorrietapp.modelo.Reuniones;
 import com.example.elorrietapp.modelo.Users;
 
 import java.util.ArrayList;
-import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -39,7 +36,12 @@ public class BilerakFragment extends Fragment {
         requireActivity().setTitle(R.string.bilerak);
         BilerakZerrendak = view.findViewById(R.id.BilerakZerrendak);
         Button buttonSortuBilerak = view.findViewById(R.id.buttonSortuBilerak);
+        Button buttonAtzera = view.findViewById(R.id.buttonAtzera);
         BilerakZerrendak.setLayoutManager(new LinearLayoutManager(getContext()));
+
+        buttonAtzera.setOnClickListener(v -> {
+            requireActivity().getSupportFragmentManager().popBackStack();
+        });
 
         adapter = new BilerakAdapter(bilerak, reunion -> {
             Bundle bundle = new Bundle();

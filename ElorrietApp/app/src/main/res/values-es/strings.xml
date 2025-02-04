@@ -24,7 +24,6 @@
     <string name="profila">Perfil</string>
     <string name="Bilatu">Buscar...</string>
     <string name="BilatuIrak">Buscar...</string>
-
     <string name="onartuta">Aceptado</string>
     <string name="ezeztatuta">Rechazado</string>
     <string name="gatazka">Conflicto</string>
@@ -32,5 +31,9 @@
     <string name="sortu_bilerak">Crear reuniones</string>
     <string name="Gorde">Guardar</string>
     <string name="Aldatu_Hizkuntza">Cambiar Idioma</string>
-
+    <string name="logout">Cerrar sesión</string>
+    <string name="ordutegia">Horarios</string>
+    <string name="ordutegiIrakasleak">Horarios del profesor</string>
+    <string name="ordutegiIkasleak">Horarios del estudiante</string>
+    <string name="hora">Horas</string>
 </resources>

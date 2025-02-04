@@ -50,7 +50,6 @@ public class MainActivity extends AppCompatActivity {
         int id = menuItem.getItemId();
 
         if (id == R.id.profila) {
-            // Cambiar a la pantalla de perfil
             ProfilaFragment fragment = new ProfilaFragment();
             getSupportFragmentManager().beginTransaction()
                     .replace(R.id.fragmentContainerView, fragment)
@@ -73,40 +72,29 @@ public class MainActivity extends AppCompatActivity {
 
         return super.onOptionsItemSelected(menuItem);
     }
-    private void toggleLanguage() {
-        // Obtener el idioma actual
-        String currentLanguage = Locale.getDefault().getLanguage();
 
-        // Determinar el nuevo idioma
+    private void toggleLanguage() {
+        String currentLanguage = Locale.getDefault().getLanguage();
         String newLanguage;
         if ("es".equals(currentLanguage)) {
-            newLanguage = ""; // Cambiar al idioma predeterminado (vacío)
+            newLanguage = "";
         } else {
-            newLanguage = "es"; // Cambiar al español
+            newLanguage = "es";
         }
-
-        // Cambiar el idioma
         changeLanguage(newLanguage);
     }
 
     private void changeLanguage(String languageCode) {
         Resources resources = getResources();
         Configuration configuration = resources.getConfiguration();
-
-        // Configurar el nuevo idioma
-        Locale locale = new Locale(languageCode); // "" para predeterminado, "es" para español
+        Locale locale = new Locale(languageCode);
         Locale.setDefault(locale);
         configuration.setLocale(locale);
-
-        // Actualizar la configuración
         resources.updateConfiguration(configuration, resources.getDisplayMetrics());
-
-        // Guardar el idioma seleccionado en SharedPreferences
         saveLanguagePreference(languageCode);
-
-        // Recrear la actividad para aplicar los cambios
         recreate();
     }
+
     private void saveLanguagePreference(String languageCode) {
         SharedPreferences preferences = getSharedPreferences("Settings", MODE_PRIVATE);
         SharedPreferences.Editor editor = preferences.edit();

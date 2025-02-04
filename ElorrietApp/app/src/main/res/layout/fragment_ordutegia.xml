@@ -1,27 +1,12 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     android:orientation="vertical"
     android:padding="16dp">
 
-    <TextView
-        android:id="@+id/textViewTitle"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Horarios"
-        android:textSize="20sp"
-        android:textStyle="bold"
-        android:layout_marginBottom="16dp" />
-
-    <TextView
-        android:id="@+id/textViewModulo"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Modulo" />
-
     <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="0dp"
+        android:layout_height="623dp"
         android:layout_weight="1">
 
         <HorizontalScrollView
@@ -33,12 +18,15 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:padding="16dp"
-                android:stretchColumns="1">
-
-                <!-- Añadir columnas dinámicamente con peso -->
-            </TableLayout>
-
+                android:stretchColumns="1"></TableLayout>
         </HorizontalScrollView>
     </ScrollView>
 
+    <Button
+        android:id="@+id/buttonAtzera"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:backgroundTint="@color/MoradoN"
+        android:text="@string/atzera" />
 </LinearLayout>

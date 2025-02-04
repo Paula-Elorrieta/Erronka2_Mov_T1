@@ -7,6 +7,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
@@ -31,12 +32,15 @@ public class IkasleOrdutegiaFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflar el diseño para este fragmento
         View view = inflater.inflate(R.layout.fragment_ikasle_ordutegia, container, false);
-
+        requireActivity().setTitle(R.string.ordutegiIkasleak);
         tableLayoutHorarios = view.findViewById(R.id.tableLayoutHorarios);
-
         obtenerHorariosAsync(Gen.getLoggedUser().getId());
+        Button buttonAtzera = view.findViewById(R.id.buttonAtzera);
+
+        buttonAtzera.setOnClickListener(v -> {
+            requireActivity().getSupportFragmentManager().popBackStack();
+        });
 
         return view;
     }
@@ -45,7 +49,6 @@ public class IkasleOrdutegiaFragment extends Fragment {
         new ObtenerHorariosTask().execute(ikasleId);
     }
 
-    // Clase AsyncTask para obtener horarios en segundo plano
     private class ObtenerHorariosTask extends AsyncTask<Integer, Void, List<Horarios>> {
 
         @Override
@@ -65,7 +68,6 @@ public class IkasleOrdutegiaFragment extends Fragment {
             super.onPostExecute(horariosResult);
 
             if (horariosResult != null) {
-                // Crear un adaptador de tabla con los horarios obtenidos
                 TableAdapter tableAdapter = new TableAdapter(getContext(), tableLayoutHorarios, horariosResult);
                 tableAdapter.actualizarTabla();
             } else {

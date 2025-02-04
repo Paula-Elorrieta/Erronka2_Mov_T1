@@ -42,9 +42,6 @@ public class SortuBilerakFragment extends Fragment {
     private ArrayList<Users> erabiltzaileakGuztiak = new ArrayList<>();
     private ArrayList<Users> irakasleak = new ArrayList<>();
     private ArrayList<Users> ikasleak = new ArrayList<>();
-
-    private Users selectedProfesor;
-    private Users selectedAlumno;
     private Ikastetxeak selectedCentro;
     private int defaultIndex = 0;
     private Timestamp selectedTimestamp;
@@ -75,22 +72,28 @@ public class SortuBilerakFragment extends Fragment {
 
         buttonSortuBilerak.setOnClickListener(v -> {
             if (selectedCentro == null) {
-                Log.e("SortuBilerakFragment", "Error: No se ha seleccionado un centro");
-                Toast.makeText(getContext(), "Debe seleccionar un centro", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getContext(), "Zentroa aukeratu behar duzu", Toast.LENGTH_SHORT).show();
                 return;
             }
 
             if (selectedTimestamp == null) {
-                Log.e("SortuBilerakFragment", "Error: No se ha seleccionado una fecha");
-                Toast.makeText(getContext(), "Debe seleccionar una fecha", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getContext(), "Data aukeratu behar duzu", Toast.LENGTH_SHORT).show();
                 return;
             }
 
             String aula = editTextGela.getText().toString();
             String titulo = editTextTitulua.getText().toString();
             String asunto = editTextAsuntoa.getText().toString();
-            if (aula.isEmpty() || titulo.isEmpty() || asunto.isEmpty()) {
-                Toast.makeText(getContext(), "Por favor, complete todos los campos", Toast.LENGTH_SHORT).show();
+            if (aula.isEmpty()) {
+                Toast.makeText(getContext(), "Aula bete behar da", Toast.LENGTH_SHORT).show();
+                return;
+            }
+            if (titulo.isEmpty()) {
+                Toast.makeText(getContext(), "Titulua bete behar da", Toast.LENGTH_SHORT).show();
+                return;
+            }
+            if (asunto.isEmpty()) {
+                Toast.makeText(getContext(), "Gaia bete behar da", Toast.LENGTH_SHORT).show();
                 return;
             }
 
@@ -115,11 +118,10 @@ public class SortuBilerakFragment extends Fragment {
             Log.e("SortuBilerakFragment", "Bilera creada: " + bilerak.getIdCentro());
 
             ExecutorService executor = Executors.newSingleThreadExecutor();
-            executor.execute(() -> Mysql.insertarReunion(bilerak));
+            executor.execute(() -> Mysql.bileraGehitu(bilerak));
             Toast.makeText(getContext(), "Bilera sortuta", Toast.LENGTH_SHORT).show();
             emailBidali(bilerak, selectedCentro.getNOM());
 
-            // vaciar los campos
             editTextGela.setText("");
             editTextTitulua.setText("");
             editTextAsuntoa.setText("");
@@ -173,7 +175,6 @@ public class SortuBilerakFragment extends Fragment {
                                 @Override
                                 public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                                     selectedCentro = ikastetxeakList.get(position);
-                                    Log.d("SortuBilerakFragment", "Centro seleccionado: " + selectedCentro.getNOM());
                                 }
 
                                 @Override
@@ -184,10 +185,10 @@ public class SortuBilerakFragment extends Fragment {
                         });
                     }
                 } else {
-                    Log.e("SortuBilerakFragment", "Lista de ikastetxeak vacía o nula");
+                    Log.e("SortuBilerakFragment", "Zerrenda hutsik edo null");
                 }
             } catch (Exception e) {
-                Log.e("SortuBilerakFragment", "Error obteniendo ikastetxeak", e);
+                Log.e("SortuBilerakFragment", "Ikastetxeak errorea", e);
             }
         });
     }
@@ -233,7 +234,7 @@ public class SortuBilerakFragment extends Fragment {
                         });
                     }
                 } else {
-                    Log.e("SortuBilerakFragment", "Lista de usuarios vacía o nula");
+                    Log.e("SortuBilerakFragment", "Erabiltzaileak hutsik edo null");
                 }
             } catch (Exception e) {
                 Log.e("SortuBilerakFragment", "Error obteniendo usuarios", e);

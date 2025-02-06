@@ -1,32 +1,52 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<com.google.android.material.card.MaterialCardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical"
+    android:layout_margin="16dp"
+    app:cardCornerRadius="12dp"
+    app:cardElevation="4dp"
     android:padding="16dp">
 
-    <ScrollView
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="623dp"
-        android:layout_weight="1">
-
-        <HorizontalScrollView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
-            <TableLayout
-                android:id="@+id/tableLayoutHorarios"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:padding="16dp"
-                android:stretchColumns="1"></TableLayout>
-        </HorizontalScrollView>
-    </ScrollView>
-
-    <Button
-        android:id="@+id/buttonAtzera"
-        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:backgroundTint="@color/MoradoN"
-        android:text="@string/atzera" />
-</LinearLayout>
+        android:orientation="vertical"
+        android:padding="8dp">
+
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="623dp"
+            android:layout_marginBottom="16dp">
+
+            <HorizontalScrollView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <TableLayout
+                    android:id="@+id/tableLayoutHorarios"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:padding="16dp"
+                    android:stretchColumns="*"/>
+            </HorizontalScrollView>
+        </ScrollView>
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/buttonAtzera"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/atzera"
+            android:textAllCaps="false"
+            android:textColor="@android:color/white"
+            style="@style/Widget.MaterialComponents.Button"
+            android:paddingHorizontal="24dp"
+            android:paddingVertical="12dp"
+            app:cornerRadius="50dp"
+            android:layout_gravity="center"
+            android:backgroundTint="@color/MoradoN"
+            app:iconTint="@android:color/white"
+            app:iconPadding="8dp"/>
+
+    </LinearLayout>
+</com.google.android.material.card.MaterialCardView>

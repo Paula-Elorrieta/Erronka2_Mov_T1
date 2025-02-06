@@ -71,6 +71,23 @@ public class SortuBilerakFragment extends Fragment {
         });
 
         buttonSortuBilerak.setOnClickListener(v -> {
+
+            String aula = editTextGela.getText().toString();
+            String titulo = editTextTitulua.getText().toString();
+            String asunto = editTextAsuntoa.getText().toString();
+            if (aula.isEmpty()) {
+                editTextGela.setError("Aula bete behar da");
+                return;
+            }
+            if (titulo.isEmpty()) {
+                editTextTitulua.setError("Titulua bete behar da");
+                return;
+            }
+            if (asunto.isEmpty()) {
+                editTextAsuntoa.setError("Asuntoa bete behar da");
+                return;
+            }
+
             if (selectedCentro == null) {
                 Toast.makeText(getContext(), "Zentroa aukeratu behar duzu", Toast.LENGTH_SHORT).show();
                 return;
@@ -78,22 +95,6 @@ public class SortuBilerakFragment extends Fragment {
 
             if (selectedTimestamp == null) {
                 Toast.makeText(getContext(), "Data aukeratu behar duzu", Toast.LENGTH_SHORT).show();
-                return;
-            }
-
-            String aula = editTextGela.getText().toString();
-            String titulo = editTextTitulua.getText().toString();
-            String asunto = editTextAsuntoa.getText().toString();
-            if (aula.isEmpty()) {
-                Toast.makeText(getContext(), "Aula bete behar da", Toast.LENGTH_SHORT).show();
-                return;
-            }
-            if (titulo.isEmpty()) {
-                Toast.makeText(getContext(), "Titulua bete behar da", Toast.LENGTH_SHORT).show();
-                return;
-            }
-            if (asunto.isEmpty()) {
-                Toast.makeText(getContext(), "Gaia bete behar da", Toast.LENGTH_SHORT).show();
                 return;
             }
 
@@ -251,7 +252,7 @@ public class SortuBilerakFragment extends Fragment {
         DatePickerDialog datePickerDialog = new DatePickerDialog(getContext(), new DatePickerDialog.OnDateSetListener() {
             @Override
             public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
-                monthOfYear = monthOfYear + 1; // Ajustar el mes
+                monthOfYear = monthOfYear + 1;
                 String selectedDate = dayOfMonth + "/" + monthOfYear + "/" + year;
                 textViewData.setText(selectedDate);
 
@@ -261,8 +262,11 @@ public class SortuBilerakFragment extends Fragment {
             }
         }, year, month, day);
 
+        datePickerDialog.getDatePicker().setMinDate(System.currentTimeMillis());
+
         datePickerDialog.show();
     }
+
 
     private void emailBidali(Reuniones bilerak, String ikastetxea) {
         ExecutorService executor = Executors.newSingleThreadExecutor();

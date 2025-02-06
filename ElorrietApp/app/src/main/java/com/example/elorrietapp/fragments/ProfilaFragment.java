@@ -81,17 +81,23 @@ public class ProfilaFragment extends Fragment {
         executor.execute(() -> {
             try {
                 List<Matriculaciones> matriculaciones = service.getMatrikulazioakByErabiltzaileak(user.getId());
+
                 requireActivity().runOnUiThread(() -> {
-                    if (!matriculaciones.isEmpty()) {
+                    if (matriculaciones == null || matriculaciones.isEmpty()) {
+                        textVCurso.setText("Ez dago matrikulaziorik");
+                    } else {
                         textVCurso.setText(matriculaciones.get(0).getCiclos().getNombre()
                                 + " - " + matriculaciones.get(0).getId().getCurso());
                     }
                 });
+
             } catch (Exception e) {
                 Log.e("ProfilaFragment", "Error cargando matriculaciones", e);
+                requireActivity().runOnUiThread(() -> textVCurso.setText("Errorea matrikulazioak kargatzean"));
             }
         });
     }
+
 
     private Uri byteToUri(byte[] argazkia) {
         File file = new File(getContext().getCacheDir(), "argazkia.jpg");

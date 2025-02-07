@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">ElorrietApp</string>
+    <string name="hasi_saioa">Iniciar sesión</string>
+    <string name="erabiltzailea">Usuario</string>
+    <string name="hello_blank_fragment">Hola, fragmento en blanco</string>
+    <string name="pasahitza_Ahaztuta">Contraseña olvidada</string>
+    <string name="textErabiltzailea">Usuario</string>
+    <string name="login">Iniciar sesión</string>
+    <string name="textPasahitza">Contraseña</string>
+    <string name="argazkia_aldatu">Cambiar foto</string>
+    <string name="atzera">Atrás</string>
+    <string name="taldean_zaude">Estás en el grupo</string>
+    <string name="kaixo">Hola</string>
+    <string name="irakasleen_ordutegiak">Horarios de los profesores</string>
+    <string name="nire_ordutegiak">Mis horarios</string>
+    <string name="irakasle_datuak">Datos del profesor</string>
+    <string name="ikasle_datuak">Datos del estudiante</string>
+    <string name="bilerak">Reuniones</string>
+    <string name="bilerakDetails">Detalles de las reuniones</string>
+    <string name="bilerakSortu">Crear reuniones</string>
+    <string name="ikasleen_datuak">Datos de los estudiantes</string>
+    <string name="irakasleen_datuak">Datos de los profesores</string>
+    <string name="profila">Perfil</string>
+    <string name="Bilatu">Buscar...</string>
+    <string name="BilatuIrak">Buscar...</string>
+    <string name="onartuta">Aceptado</string>
+    <string name="ezeztatuta">Rechazado</string>
+    <string name="gatazka">Conflicto</string>
+    <string name="onartzeke">No aceptado</string>
+    <string name="sortu_bilerak">Crear reuniones</string>
+    <string name="Gorde">Guardar</string>
+    <string name="Aldatu_Hizkuntza">Cambiar Idioma</string>
+    <string name="logout">Cerrar sesión</string>
+    <string name="ordutegia">Horarios</string>
+    <string name="ordutegiIrakasleak">Horarios del profesor</string>
+    <string name="ordutegiIkasleak">Horarios del estudiante</string>
+    <string name="hora">Horas</string>
+</resources>
